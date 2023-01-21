@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<IsRoslynComponent>true</IsRoslynComponent>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Authors>Christoph Hornung</Authors>
+		<PackageId>Chorn.EmbeddedResourceAccessGenerator</PackageId>
+		<Version>1.0.0</Version>
+		<Copyright>Christoph Hornung</Copyright>
+		<Description>Generates strongly typed access methods for embedded resources.</Description>
+		<PackageProjectUrl>https://github.com/ChristophHornung/EmbeddedResourceGenerator</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/ChristophHornung/EmbeddedResourceGenerator</RepositoryUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Include="..\README.md" Link="README.md" Pack="true" PackagePath=".">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<CompilerVisibleProperty Include="RootNamespace" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="lib\_._" Pack="true" PackagePath="lib/netstandard2.0"/>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="build\Chorn.EmbeddedResourceAccessGenerator.props" Pack="true" PackagePath="build">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.0.1" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+</Project>
