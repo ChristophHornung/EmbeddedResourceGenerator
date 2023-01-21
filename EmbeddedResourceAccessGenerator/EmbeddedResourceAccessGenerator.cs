@@ -139,9 +139,9 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 
 	private static string GetRelativePath(string fullPath, string basePath)
 	{
-		if (!basePath.EndsWith(Path.PathSeparator.ToString()))
+		if (!basePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
 		{
-			basePath += Path.PathSeparator;
+			basePath += Path.DirectorySeparatorChar;
 		}
 
 		Uri baseUri = new(basePath);
