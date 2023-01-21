@@ -149,7 +149,7 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 
 		Uri relativeUri = baseUri.MakeRelativeUri(fullUri);
 
-		return relativeUri.ToString().Replace("/", Path.PathSeparator.ToString());
+		return relativeUri.ToString().Replace("/", Path.DirectorySeparatorChar.ToString());
 	}
 
 	private void Log(GeneratorExecutionContext context, string log)
