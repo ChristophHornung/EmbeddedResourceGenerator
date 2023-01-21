@@ -5,4 +5,4 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|--------------------
-EMBRESGEN001  |  MessageExtensionGenerator   |  Error | An unknown exception occured during generation.
+EMBRESGENLOG  |  MessageExtensionGenerator   |  Warning | Log output during development - will not be shipped

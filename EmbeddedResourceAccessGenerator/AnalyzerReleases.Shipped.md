@@ -2,9 +2,8 @@
 ; https://github.com/dotnet/roslyn-analyzers/blob/main/src/Microsoft.CodeAnalysis.Analyzers/ReleaseTrackingAnalyzers.Help.md
 
 ## Release 1.0
-
 ### New Rules
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|--------------------
-EMBRESGENLOG  |  MessageExtensionGenerator   |  Warning | Log output during development - will not be shipped
+EMBRESGEN001  |  MessageExtensionGenerator   |  Error | An unknown exception occured during generation.
