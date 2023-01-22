@@ -7,18 +7,30 @@ public class EmbeddedResourceAccessGeneratorTests
 	[Fact]
 	public void TestTxtIsAccessible()
 	{
-		Assert.Equal("Success", EmbeddedResource.TestAssets_Test_txt.GetReader().ReadToEnd());
+		using var reader = EmbeddedResource.TestAssets_Test_txt.GetReader();
+		Assert.Equal("Success", reader.ReadToEnd());
+
+		using var reader2 = EmbeddedResources.TestAssets_Test_txt_Reader;
+		Assert.Equal("Success", reader2.ReadToEnd());
 	}
 
 	[Fact]
 	public void RootTestTxtIsAccessible()
 	{
-		Assert.Equal("Success", EmbeddedResource.Test_txt.GetReader().ReadToEnd());
+		using var reader = EmbeddedResource.Test_txt.GetReader();
+		Assert.Equal("Success", reader.ReadToEnd());
+
+		using var reader2 = EmbeddedResources.Test_txt_Reader;
+		Assert.Equal("Success", reader2.ReadToEnd());
 	}
 
 	[Fact]
 	public void SubfolderTestTxtIsAccessible()
 	{
-		Assert.Equal("Success", EmbeddedResource.TestAssets_Subfolder_Test_txt.GetReader().ReadToEnd());
+		using var reader = EmbeddedResource.TestAssets_Subfolder_Test_txt.GetReader();
+		Assert.Equal("Success", reader.ReadToEnd());
+
+		using var reader2 = EmbeddedResources.TestAssets_Subfolder_Test_txt_Reader;
+		Assert.Equal("Success", reader2.ReadToEnd());
 	}
 }
