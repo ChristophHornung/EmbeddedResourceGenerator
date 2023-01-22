@@ -2,21 +2,9 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net6.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
-
+		<TargetFramework>net7.0</TargetFramework>
 	</PropertyGroup>
 	
-	<ItemGroup>
-		<None Remove="RootTest.txt" />
-		<None Remove="TestAsset\Test.txt" />
-		<None Remove="TestAsset\Test2.txt" />
-		<None Remove="TestAsset\TestNoEmbedd.txt" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<Content Include="TestAsset\TestNoEmbedd.txt">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -25,11 +13,8 @@
 		<EmbeddedResource Include="TestAsset\Test2.txt" />
 		<EmbeddedResource Include="TestAsset\Test.txt" />
 	</ItemGroup>
-	<PropertyGroup>
-		<!-- Update the property to include all EmbeddedResource files -->
-		<AdditionalFileItemNames>$(AdditionalFileItemNames);EmbeddedResource</AdditionalFileItemNames>
-	</PropertyGroup>
+
 	<ItemGroup>
-	  <ProjectReference Include="..\EmbeddedResourceAccessGenerator\EmbeddedResourceAccessGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	  <PackageReference Include="Chorn.EmbeddedResourceAccessGenerator" Version="*-*" />
 	</ItemGroup>
 </Project>
