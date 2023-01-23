@@ -58,9 +58,11 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 			{
 				string resourceName =
 					EmbeddedResourceAccessGenerator.GetRelativePath(contextAdditionalFile.Path, mainDirectory);
-				resourceName = this.GetValidName(resourceName);
+				resourceName = this.GetResourceName(resourceName);
+				string identifierName = this.GetValidIdentifierName(resourceName);
+
 				sourceBuilder.AppendLine($$"""
-					public static Stream {{resourceName.Replace('.', '_')}}_Stream
+					public static Stream {{identifierName}}_Stream
 					{
 						get {
 							Assembly assembly = typeof(EmbeddedResources).Assembly;
@@ -69,7 +71,7 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 						}
 					}
 
-					public static StreamReader {{resourceName.Replace('.', '_')}}_Reader
+					public static StreamReader {{identifierName}}_Reader
 					{
 						get 
 						{
@@ -113,9 +115,10 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 			{
 				string resourceName =
 					EmbeddedResourceAccessGenerator.GetRelativePath(contextAdditionalFile.Path, mainDirectory);
-				resourceName = this.GetValidName(resourceName);
+				resourceName = this.GetResourceName(resourceName);
+				string identifierName = this.GetValidIdentifierName(resourceName);
 				sourceBuilder.AppendLine($$"""
-					{{resourceName.Replace('.', '_')}},
+					{{identifierName}},
 				""");
 			}
 
@@ -132,11 +135,16 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 		}
 	}
 
-	private string GetValidName(string resourceName)
+	private string GetResourceName(string resourceName)
+	{
+		return resourceName.Replace('\\', '.').Replace('/', '.');
+	}
+
+	private string GetValidIdentifierName(string resourceName)
 	{
 		StringBuilder sb = new(resourceName);
-		sb.Replace('\\', '.');
-		sb.Replace('/', '.');
+		sb.Replace('.', '_');
+
 		bool first = true;
 		for (var index = 0; index < resourceName.Length; index++)
 		{
