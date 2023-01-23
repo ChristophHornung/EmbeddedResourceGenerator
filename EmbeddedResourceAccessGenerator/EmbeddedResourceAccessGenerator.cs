@@ -97,13 +97,15 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 						Assembly assembly = typeof(EmbeddedResources).Assembly;
 						return new StreamReader(assembly.GetManifestResourceStream(GetResourceName(resource))!);
 					}
+
 				""");
 
 			sourceBuilder.AppendLine($$"""
 					public static string GetResourceName(this EmbeddedResource resource)
 					{
-						return resource switch {
-					""");
+						return resource switch 
+						{
+				""");
 
 			foreach (AdditionalText contextAdditionalFile in context.AdditionalFiles)
 			{
@@ -113,13 +115,17 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 				string identifierName = this.GetValidIdentifierName(resourceName);
 
 				sourceBuilder.AppendLine($$"""
-					{{identifierName}} => "{{resourceName}}",
+							{{identifierName}} => "{{resourceName}}",
 				""");
 			}
 
-			sourceBuilder.AppendLine("}");
+			sourceBuilder.AppendLine($$"""
+							_ => throw new InvalidOperationException(),
+				""");
 
-			sourceBuilder.AppendLine("}");
+			sourceBuilder.AppendLine("\t\t};");
+
+			sourceBuilder.AppendLine("\t}");
 
 			sourceBuilder.AppendLine("}");
 
