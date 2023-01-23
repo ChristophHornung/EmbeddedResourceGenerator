@@ -1,5 +1,6 @@
 ﻿namespace EmbeddedResourceAccessGenerator;
 
+using System.Globalization;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -57,7 +58,7 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 			{
 				string resourceName =
 					EmbeddedResourceAccessGenerator.GetRelativePath(contextAdditionalFile.Path, mainDirectory);
-				resourceName = resourceName.Replace('\\', '.').Replace('/', '.');
+				resourceName = this.GetValidName(resourceName);
 				sourceBuilder.AppendLine($$"""
 					public static Stream {{resourceName.Replace('.', '_')}}_Stream
 					{
@@ -112,7 +113,7 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 			{
 				string resourceName =
 					EmbeddedResourceAccessGenerator.GetRelativePath(contextAdditionalFile.Path, mainDirectory);
-				resourceName = resourceName.Replace('\\', '.').Replace('/', '.');
+				resourceName = this.GetValidName(resourceName);
 				sourceBuilder.AppendLine($$"""
 					{{resourceName.Replace('.', '_')}},
 				""");
@@ -129,6 +130,50 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 			context.ReportDiagnostic(Diagnostic.Create(EmbeddedResourceAccessGenerator.generationWarning, Location.None,
 				e.Message, e.StackTrace));
 		}
+	}
+
+	private string GetValidName(string resourceName)
+	{
+		StringBuilder sb = new(resourceName);
+		sb.Replace('\\', '.');
+		sb.Replace('/', '.');
+		bool first = true;
+		for (var index = 0; index < resourceName.Length; index++)
+		{
+			char c = resourceName[index];
+			bool replace;
+			switch (char.GetUnicodeCategory(c))
+			{
+				case UnicodeCategory.LowercaseLetter:
+				case UnicodeCategory.UppercaseLetter:
+				case UnicodeCategory.TitlecaseLetter:
+				case UnicodeCategory.ModifierLetter:
+				case UnicodeCategory.OtherLetter:
+					replace = false;
+					break;
+				case UnicodeCategory.ConnectorPunctuation:
+				case UnicodeCategory.DecimalDigitNumber:
+				case UnicodeCategory.Format:
+				case UnicodeCategory.LetterNumber:
+				case UnicodeCategory.NonSpacingMark:
+				case UnicodeCategory.SpacingCombiningMark:
+					// Only valid in non-leading position.
+					replace = first;
+					break;
+				default:
+					replace = true;
+					break;
+			}
+
+			if (replace)
+			{
+				sb[index] = '_';
+			}
+
+			first = false;
+		}
+		
+		return sb.ToString();
 	}
 
 	/// <inheritdoc/>
