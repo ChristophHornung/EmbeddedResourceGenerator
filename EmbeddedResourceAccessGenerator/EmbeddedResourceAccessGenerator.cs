@@ -114,7 +114,7 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 				string identifierName = this.GetValidIdentifierName(resourceName);
 
 				sourceBuilder.AppendLine($$"""
-							EmbeddedResource.{{identifierName}} => "{{resourceName}}",
+							EmbeddedResource.{{identifierName}} => "{{rootNamespace}}.{{resourceName}}",
 				""");
 			}
 
