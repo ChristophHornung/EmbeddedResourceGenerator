@@ -1,6 +1,5 @@
 ﻿namespace EmbeddedResourceAccessGenerator;
 
-using System.Data.Common;
 using System.Globalization;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -115,7 +114,7 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 				string identifierName = this.GetValidIdentifierName(resourceName);
 
 				sourceBuilder.AppendLine($$"""
-							{{identifierName}} => "{{resourceName}}",
+							EmbeddedResource.{{identifierName}} => "{{resourceName}}",
 				""");
 			}
 
