@@ -68,7 +68,7 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 					/// <summary>
 					/// Gets the embedded resource '{{resourceName}}' as a stream.
 					/// </summary>
-					/// <returns>The stream to access the embedded resource.</stream>
+					/// <returns>The stream to access the embedded resource.</returns>
 					public static Stream {{identifierName}}_Stream
 					{
 						get {
@@ -81,7 +81,7 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 					/// <summary>
 					/// Gets the embedded resource '{{resourceName}}' as a stream-reader.
 					/// </summary>
-					/// <returns>The stream-reader to access the embedded resource.</stream>
+					/// <returns>The stream-reader to access the embedded resource.</returns>
 					public static StreamReader {{identifierName}}_Reader
 					{
 						get 
@@ -100,7 +100,7 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 					/// Gets the embedded resource's stream.
 					/// </summary>
 					/// <param name="resource">The embedded resource to retrieve the stream for.</param>
-					/// <returns>The stream to access the embedded resource.</stream>
+					/// <returns>The stream to access the embedded resource.</returns>
 					public static Stream GetStream(this EmbeddedResource resource)
 					{
 						Assembly assembly = typeof(EmbeddedResources).Assembly;
@@ -111,7 +111,7 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 					/// Gets the embedded resource's stream-reader.
 					/// </summary>
 					/// <param name="resource">The embedded resource to retrieve the stream-reader for.</param>
-					/// <returns>The stream-reader to access the embedded resource.</stream>
+					/// <returns>The stream-reader to access the embedded resource.</returns>
 					public static StreamReader GetReader(this EmbeddedResource resource)
 					{
 						Assembly assembly = typeof(EmbeddedResources).Assembly;
@@ -125,7 +125,7 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 					/// Gets the embedded resource's name in the format required by <c>GetManifestResourceStream</c>.
 					/// </summary>
 					/// <param name="resource">The embedded resource to retrieve the name for.</param>
-					/// <returns>The name to access the embedded resource.</stream>
+					/// <returns>The name to access the embedded resource.</returns>
 					public static string GetResourceName(this EmbeddedResource resource)
 					{
 						return resource switch 
