@@ -1,5 +1,6 @@
 ﻿namespace EmbeddedResourceAccessGenerator;
 
+using System.Data.Common;
 using System.Globalization;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -96,12 +97,29 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 						Assembly assembly = typeof(EmbeddedResources).Assembly;
 						return new StreamReader(assembly.GetManifestResourceStream(GetResourceName(resource))!);
 					}
-				
+				""");
+
+			sourceBuilder.AppendLine($$"""
 					public static string GetResourceName(this EmbeddedResource resource)
 					{
-						return "{{rootNamespace}}." + Enum.GetName(typeof(EmbeddedResource), resource)!.Replace('_','.');
-					}
+						return resource switch {
+					""");
+
+			foreach (AdditionalText contextAdditionalFile in context.AdditionalFiles)
+			{
+				string resourceName =
+					EmbeddedResourceAccessGenerator.GetRelativePath(contextAdditionalFile.Path, mainDirectory);
+				resourceName = this.GetResourceName(resourceName);
+				string identifierName = this.GetValidIdentifierName(resourceName);
+
+				sourceBuilder.AppendLine($$"""
+					{{identifierName}} => "{{resourceName}}",
 				""");
+			}
+
+			sourceBuilder.AppendLine("}");
+
+			sourceBuilder.AppendLine("}");
 
 			sourceBuilder.AppendLine("}");
 

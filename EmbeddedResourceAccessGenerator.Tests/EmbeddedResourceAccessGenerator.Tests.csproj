@@ -7,14 +7,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="Test.txt" />
-		<None Remove="TestAssets\Subfolder\Test.txt" />
-		<None Remove="TestAssets\Test.txt" />
-	</ItemGroup>
-
-	<ItemGroup>
+		<EmbeddedResource Include="2InvalidChars-%3b.txt" />
 		<EmbeddedResource Include="Test.txt" />
 		<EmbeddedResource Include="TestAssets\Subfolder\Test.txt" />
+		<EmbeddedResource Include="TestAssets\2InvalidChars-%3b.txt" />
 		<EmbeddedResource Include="TestAssets\Test.txt" />
 	</ItemGroup>
 
