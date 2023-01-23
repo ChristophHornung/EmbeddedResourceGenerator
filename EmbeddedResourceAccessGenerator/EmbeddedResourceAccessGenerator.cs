@@ -49,6 +49,9 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 				using System.IO;
 				using System.Reflection;
 
+				/// <summary>
+				/// Auto-generated class to access all embedded resources in an assembly.
+				/// </summary>
 				public static partial class EmbeddedResources
 				{
 				""");
@@ -62,6 +65,10 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 				string identifierName = this.GetValidIdentifierName(resourceName);
 
 				sourceBuilder.AppendLine($$"""
+					/// <summary>
+					/// Gets the embedded resource '{{resourceName}}' as a stream.
+					/// </summary>
+					/// <returns>The stream to access the embedded resource.</stream>
 					public static Stream {{identifierName}}_Stream
 					{
 						get {
@@ -71,6 +78,10 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 						}
 					}
 
+					/// <summary>
+					/// Gets the embedded resource '{{resourceName}}' as a stream-reader.
+					/// </summary>
+					/// <returns>The stream-reader to access the embedded resource.</stream>
 					public static StreamReader {{identifierName}}_Reader
 					{
 						get 
@@ -85,12 +96,22 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 			}
 
 			sourceBuilder.AppendLine($$"""
+					/// <summary>
+					/// Gets the embedded resource's stream.
+					/// </summary>
+					/// <param name="resource">The embedded resource to retrieve the stream for.</param>
+					/// <returns>The stream to access the embedded resource.</stream>
 					public static Stream GetStream(this EmbeddedResource resource)
 					{
 						Assembly assembly = typeof(EmbeddedResources).Assembly;
 						return assembly.GetManifestResourceStream(GetResourceName(resource))!;
 					}
 				
+					/// <summary>
+					/// Gets the embedded resource's stream-reader.
+					/// </summary>
+					/// <param name="resource">The embedded resource to retrieve the stream-reader for.</param>
+					/// <returns>The stream-reader to access the embedded resource.</stream>
 					public static StreamReader GetReader(this EmbeddedResource resource)
 					{
 						Assembly assembly = typeof(EmbeddedResources).Assembly;
@@ -100,6 +121,11 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 				""");
 
 			sourceBuilder.AppendLine($$"""
+					/// <summary>
+					/// Gets the embedded resource's name in the format required by <c>GetManifestResourceStream</c>.
+					/// </summary>
+					/// <param name="resource">The embedded resource to retrieve the name for.</param>
+					/// <returns>The name to access the embedded resource.</stream>
 					public static string GetResourceName(this EmbeddedResource resource)
 					{
 						return resource switch 
@@ -129,7 +155,9 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 			sourceBuilder.AppendLine("}");
 
 			sourceBuilder.AppendLine("""
-				
+				/// <summary>
+				/// Auto-generated enumeration for all embedded resources in the assembly.
+				/// </summary>
 				public enum EmbeddedResource
 				{
 				""");
@@ -141,6 +169,9 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 				resourceName = this.GetResourceName(resourceName);
 				string identifierName = this.GetValidIdentifierName(resourceName);
 				sourceBuilder.AppendLine($$"""
+					/// <summary>
+					/// Represents the embedded resource '{{resourceName}}'.
+					/// </summary>
 					{{identifierName}},
 				""");
 			}
@@ -149,7 +180,7 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 			sourceBuilder.AppendLine("#nullable restore");
 
 			SourceText source = SourceText.From(sourceBuilder.ToString(), Encoding.UTF8);
-			context.AddSource("EmbeddedResourcesgenerated.cs", source);
+			context.AddSource("EmbeddedResources.generated.cs", source);
 		}
 		catch (Exception e)
 		{
