@@ -45,6 +45,7 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 			sourceBuilder.AppendLine($$"""
 				#nullable enable
 				namespace {{rootNamespace}};
+				using System;
 				using System.Collections;
 				using System.IO;
 				using System.Reflection;
