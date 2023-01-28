@@ -32,12 +32,25 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 	/// <inheritdoc/>
 	public void Execute(GeneratorExecutionContext context)
 	{
-		SyntaxTree mainSyntaxTree = context.Compilation.SyntaxTrees
-			.First(x => x.HasCompilationUnitRoot);
-
-		string mainDirectory = Path.GetDirectoryName(mainSyntaxTree.FilePath)!;
-
 		context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.rootnamespace", out var rootNamespace);
+
+		string mainDirectory;
+		if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.projectdir", out var projectDir))
+		{
+			mainDirectory = projectDir;
+		}
+		else
+		{
+			// If the build propery is not set we use the first syntax tree as the main directory.
+			// This might not be correct because the root directory might not contain a .cs file, 
+			// in that case the first syntax tree is not in the csproj directory.
+			SyntaxTree mainSyntaxTree = context.Compilation.SyntaxTrees
+				.First(x => x.HasCompilationUnitRoot);
+
+			mainDirectory = Path.GetDirectoryName(mainSyntaxTree.FilePath)!;
+		}
+
+		this.Log(context, "CsProjDir: " + mainDirectory);
 
 		try
 		{

@@ -6,7 +6,7 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>Christoph Hornung</Authors>
 		<PackageId>Chorn.EmbeddedResourceAccessGenerator</PackageId>
-		<Version>1.0.4</Version>
+		<Version>1.0.5</Version>
 		<Copyright>Christoph Hornung</Copyright>
 		<Description>Generates strongly typed access methods for embedded resources.</Description>
 		<PackageProjectUrl>https://github.com/ChristophHornung/EmbeddedResourceGenerator</PackageProjectUrl>

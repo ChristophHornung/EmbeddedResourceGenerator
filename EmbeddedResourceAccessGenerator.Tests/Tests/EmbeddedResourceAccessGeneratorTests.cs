@@ -1,7 +1,11 @@
-﻿namespace EmbeddedResourceAccessGenerator.Tests;
+﻿namespace EmbeddedResourceAccessGenerator.Tests.Tests;
 
 using Xunit;
 
+/// <summary>
+/// The main tests. This file is deliberately not in the root folder to test that the generator works no
+/// files in the csproj folder.
+/// </summary>
 public class EmbeddedResourceAccessGeneratorTests
 {
 	[Fact]
