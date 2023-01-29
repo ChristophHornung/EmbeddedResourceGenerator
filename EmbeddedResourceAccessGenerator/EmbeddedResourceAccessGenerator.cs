@@ -1,13 +1,9 @@
 ﻿namespace EmbeddedResourceAccessGenerator;
 
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Globalization;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
 /// <summary>
@@ -34,38 +30,49 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 		isEnabledByDefault: true);
 #endif
 
-	/// <inheritdoc/>
-	public void Execute(GeneratorExecutionContext context)
+	/// <inheritdoc />
+	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
-		context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.rootnamespace", out var rootNamespace);
+		//Debugger.Launch();
 
-		string mainDirectory;
-		if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.projectdir", out var projectDir))
-		{
-			mainDirectory = projectDir;
-		}
-		else
-		{
-			// If the build propery is not set we use the first syntax tree as the main directory.
-			// This might not be correct because the root directory might not contain a .cs file, 
-			// in that case the first syntax tree is not in the csproj directory.
-			SyntaxTree mainSyntaxTree = context.Compilation.SyntaxTrees
-				.First(x => x.HasCompilationUnitRoot);
+		// We need a value provider for any addition file.
+		// As soon as there is direct access to embedded resources we can change this.
+		// All embedded resources are added as additional files through our build props integrated into the nuget.
+		IncrementalValueProvider<ImmutableArray<string>> additionaFilesProvider =
+			context.AdditionalTextsProvider.Select((t, _) => t.Path).Collect();
 
-			mainDirectory = Path.GetDirectoryName(mainSyntaxTree.FilePath)!;
-		}
+		// The root namespace value provider. Can this ever be null? So far I have not seen it.
+		IncrementalValueProvider<string?> rootNamespaceProvider = context.AnalyzerConfigOptionsProvider.Select((x, _) =>
+			x.GlobalOptions.TryGetValue("build_property.RootNamespace", out string? rootNamespace)
+				? rootNamespace
+				: null);
 
-		this.Log(context, "CsProjDir: " + mainDirectory);
+		// The project directory value provider. Can this ever be null? So far I have not seen it.
+		IncrementalValueProvider<string?> buildProjectDirProvider = context.AnalyzerConfigOptionsProvider.Select(
+			(x, _) =>
+				x.GlobalOptions.TryGetValue("build_property.projectdir", out string? rootNamespace)
+					? rootNamespace
+					: null);
 
+		// We combine the providers to generate the parameters for our source generation.
+		IncrementalValueProvider<(ImmutableArray<string> fileNames, string? rootNamespace, string? buildProjectDir)>
+			combined = additionaFilesProvider
+				.Combine(rootNamespaceProvider.Combine(buildProjectDirProvider)).Select((c, _) =>
+					(c.Left, c.Right.Left, c.Right.Right));
+
+		context.RegisterSourceOutput(combined, this.GenerateSourceIncremental);
+	}
+
+	private void GenerateSourceIncremental(SourceProductionContext context,
+		(ImmutableArray<string> fileNames, string? rootNamespace, string? buildProjectDir) arg2)
+	{
 		try
 		{
-			
-
-			IEnumerable<string> paths = context.AdditionalFiles.Select(f => f.Path);
-			//this.GenerateSource(context, paths, mainDirectory,  rootNamespace);
+			this.GenerateSource(context, arg2.fileNames, arg2.buildProjectDir!, arg2.rootNamespace);
 		}
 		catch (Exception e)
 		{
+			// We generate a diagnostic message on all internal failures.
 			context.ReportDiagnostic(Diagnostic.Create(EmbeddedResourceAccessGenerator.generationWarning, Location.None,
 				e.Message, e.StackTrace));
 		}
@@ -89,7 +96,7 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 				public static partial class EmbeddedResources
 				{
 				""");
-		
+
 		foreach (string path in paths)
 		{
 			string resourceName =
@@ -216,6 +223,21 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 		context.AddSource("EmbeddedResources.generated.cs", source);
 	}
 
+	private static string GetRelativePath(string fullPath, string basePath)
+	{
+		if (!basePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
+		{
+			basePath += Path.DirectorySeparatorChar;
+		}
+
+		Uri baseUri = new(basePath);
+		Uri fullUri = new(fullPath);
+
+		Uri relativeUri = baseUri.MakeRelativeUri(fullUri);
+
+		return relativeUri.ToString().Replace("/", Path.DirectorySeparatorChar.ToString());
+	}
+
 	private string GetResourceName(string resourceName)
 	{
 		return resourceName.Replace('\\', '.').Replace('/', '.');
@@ -227,7 +249,7 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 		sb.Replace('.', '_');
 
 		bool first = true;
-		for (var index = 0; index < resourceName.Length; index++)
+		for (int index = 0; index < resourceName.Length; index++)
 		{
 			char c = resourceName[index];
 			bool replace;
@@ -265,65 +287,10 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 		return sb.ToString();
 	}
 
-	/// <inheritdoc/>
-	public void Initialize(GeneratorInitializationContext context)
-	{
-		// Debugger.Launch();
-	}
-
-	private static string GetRelativePath(string fullPath, string basePath)
-	{
-		if (!basePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
-		{
-			basePath += Path.DirectorySeparatorChar;
-		}
-
-		Uri baseUri = new(basePath);
-		Uri fullUri = new(fullPath);
-
-		Uri relativeUri = baseUri.MakeRelativeUri(fullUri);
-
-		return relativeUri.ToString().Replace("/", Path.DirectorySeparatorChar.ToString());
-	}
-
 	private void Log(GeneratorExecutionContext context, string log)
 	{
 #if DEBUG
 		context.ReportDiagnostic(Diagnostic.Create(EmbeddedResourceAccessGenerator.logInfo, Location.None, log));
 #endif
-	}
-
-	/// <inheritdoc />
-	public void Initialize(IncrementalGeneratorInitializationContext context)
-	{
-		//Debugger.Launch();
-
-		// find all additional files that end with .txt
-		IncrementalValueProvider<ImmutableArray<string>> additionaFilesProvider =
-			context.AdditionalTextsProvider.Select((t, _) => t.Path).Collect();
-		IncrementalValueProvider<string?> rootNamespaceProvider = context.AnalyzerConfigOptionsProvider.Select((x, _) =>
-			x.GlobalOptions.TryGetValue("build_property.RootNamespace", out string? rootNamespace)
-				? rootNamespace
-				: null);
-
-		IncrementalValueProvider<string?> buildProjectDirProvider = context.AnalyzerConfigOptionsProvider.Select(
-			(x, _) =>
-				x.GlobalOptions.TryGetValue("build_property.projectdir", out string? rootNamespace)
-					? rootNamespace
-					: null);
-
-		IncrementalValueProvider<(ImmutableArray<string> fileNames, string? rootNamespace, string? buildProjectDir)>
-			combined = additionaFilesProvider
-				.Combine(rootNamespaceProvider.Combine(buildProjectDirProvider)).Select((c, _) =>
-					(c.Left, c.Right.Left, c.Right.Right));
-
-		// generate a class that contains their values as const strings
-		context.RegisterSourceOutput(combined, GenerateSourceIncremental);
-	}
-
-	private void GenerateSourceIncremental(SourceProductionContext arg1,
-		(ImmutableArray<string> fileNames, string? rootNamespace, string? buildProjectDir) arg2)
-	{
-		GenerateSource(arg1, arg2.fileNames, arg2.buildProjectDir!, arg2.rootNamespace);
 	}
 }
