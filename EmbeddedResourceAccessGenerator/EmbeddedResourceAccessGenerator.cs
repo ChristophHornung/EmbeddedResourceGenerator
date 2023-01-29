@@ -1,5 +1,6 @@
 ﻿namespace EmbeddedResourceAccessGenerator;
 
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -9,7 +10,7 @@ using Microsoft.CodeAnalysis.Text;
 /// The generator for the embedded resource access.
 /// </summary>
 [Generator]
-public class EmbeddedResourceAccessGenerator : ISourceGenerator
+public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 {
 	private static readonly DiagnosticDescriptor generationWarning = new DiagnosticDescriptor(
 		id: "EMBRESGEN001",
@@ -29,33 +30,59 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 		isEnabledByDefault: true);
 #endif
 
-	/// <inheritdoc/>
-	public void Execute(GeneratorExecutionContext context)
+	/// <inheritdoc />
+	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
-		context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.rootnamespace", out var rootNamespace);
+		//Debugger.Launch();
 
-		string mainDirectory;
-		if (context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.projectdir", out var projectDir))
-		{
-			mainDirectory = projectDir;
-		}
-		else
-		{
-			// If the build propery is not set we use the first syntax tree as the main directory.
-			// This might not be correct because the root directory might not contain a .cs file, 
-			// in that case the first syntax tree is not in the csproj directory.
-			SyntaxTree mainSyntaxTree = context.Compilation.SyntaxTrees
-				.First(x => x.HasCompilationUnitRoot);
+		// We need a value provider for any addition file.
+		// As soon as there is direct access to embedded resources we can change this.
+		// All embedded resources are added as additional files through our build props integrated into the nuget.
+		IncrementalValueProvider<ImmutableArray<string>> additionaFilesProvider =
+			context.AdditionalTextsProvider.Select((t, _) => t.Path).Collect();
 
-			mainDirectory = Path.GetDirectoryName(mainSyntaxTree.FilePath)!;
-		}
+		// The root namespace value provider. Can this ever be null? So far I have not seen it.
+		IncrementalValueProvider<string?> rootNamespaceProvider = context.AnalyzerConfigOptionsProvider.Select((x, _) =>
+			x.GlobalOptions.TryGetValue("build_property.RootNamespace", out string? rootNamespace)
+				? rootNamespace
+				: null);
 
-		this.Log(context, "CsProjDir: " + mainDirectory);
+		// The project directory value provider. Can this ever be null? So far I have not seen it.
+		IncrementalValueProvider<string?> buildProjectDirProvider = context.AnalyzerConfigOptionsProvider.Select(
+			(x, _) =>
+				x.GlobalOptions.TryGetValue("build_property.projectdir", out string? rootNamespace)
+					? rootNamespace
+					: null);
 
+		// We combine the providers to generate the parameters for our source generation.
+		IncrementalValueProvider<(ImmutableArray<string> fileNames, string? rootNamespace, string? buildProjectDir)>
+			combined = additionaFilesProvider
+				.Combine(rootNamespaceProvider.Combine(buildProjectDirProvider)).Select((c, _) =>
+					(c.Left, c.Right.Left, c.Right.Right));
+
+		context.RegisterSourceOutput(combined, this.GenerateSourceIncremental);
+	}
+
+	private void GenerateSourceIncremental(SourceProductionContext context,
+		(ImmutableArray<string> fileNames, string? rootNamespace, string? buildProjectDir) arg2)
+	{
 		try
 		{
-			StringBuilder sourceBuilder = new();
-			sourceBuilder.AppendLine($$"""
+			this.GenerateSource(context, arg2.fileNames, arg2.buildProjectDir!, arg2.rootNamespace);
+		}
+		catch (Exception e)
+		{
+			// We generate a diagnostic message on all internal failures.
+			context.ReportDiagnostic(Diagnostic.Create(EmbeddedResourceAccessGenerator.generationWarning, Location.None,
+				e.Message, e.StackTrace));
+		}
+	}
+
+	private void GenerateSource(SourceProductionContext context, IList<string> paths, string mainDirectory,
+		string? rootNamespace)
+	{
+		StringBuilder sourceBuilder = new();
+		sourceBuilder.AppendLine($$"""
 				#nullable enable
 				namespace {{rootNamespace}};
 				using System;
@@ -70,15 +97,14 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 				{
 				""");
 
+		foreach (string path in paths)
+		{
+			string resourceName =
+				EmbeddedResourceAccessGenerator.GetRelativePath(path, mainDirectory);
+			resourceName = this.GetResourceName(resourceName);
+			string identifierName = this.GetValidIdentifierName(resourceName);
 
-			foreach (AdditionalText contextAdditionalFile in context.AdditionalFiles)
-			{
-				string resourceName =
-					EmbeddedResourceAccessGenerator.GetRelativePath(contextAdditionalFile.Path, mainDirectory);
-				resourceName = this.GetResourceName(resourceName);
-				string identifierName = this.GetValidIdentifierName(resourceName);
-
-				sourceBuilder.AppendLine($$"""
+			sourceBuilder.AppendLine($$"""
 					/// <summary>
 					/// Gets the embedded resource '{{resourceName}}' as a stream.
 					/// </summary>
@@ -107,9 +133,9 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 					}
 
 				""");
-			}
+		}
 
-			sourceBuilder.AppendLine($$"""
+		sourceBuilder.AppendLine($$"""
 					/// <summary>
 					/// Gets the embedded resource's stream.
 					/// </summary>
@@ -134,7 +160,7 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 
 				""");
 
-			sourceBuilder.AppendLine($$"""
+		sourceBuilder.AppendLine($$"""
 					/// <summary>
 					/// Gets the embedded resource's name in the format required by <c>GetManifestResourceStream</c>.
 					/// </summary>
@@ -146,29 +172,29 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 						{
 				""");
 
-			foreach (AdditionalText contextAdditionalFile in context.AdditionalFiles)
-			{
-				string resourceName =
-					EmbeddedResourceAccessGenerator.GetRelativePath(contextAdditionalFile.Path, mainDirectory);
-				resourceName = this.GetResourceName(resourceName);
-				string identifierName = this.GetValidIdentifierName(resourceName);
-
-				sourceBuilder.AppendLine($$"""
-							EmbeddedResource.{{identifierName}} => "{{rootNamespace}}.{{resourceName}}",
-				""");
-			}
+		foreach (string path in paths)
+		{
+			string resourceName =
+				EmbeddedResourceAccessGenerator.GetRelativePath(path, mainDirectory);
+			resourceName = this.GetResourceName(resourceName);
+			string identifierName = this.GetValidIdentifierName(resourceName);
 
 			sourceBuilder.AppendLine($$"""
+							EmbeddedResource.{{identifierName}} => "{{rootNamespace}}.{{resourceName}}",
+				""");
+		}
+
+		sourceBuilder.AppendLine($$"""
 							_ => throw new InvalidOperationException(),
 				""");
 
-			sourceBuilder.AppendLine("\t\t};");
+		sourceBuilder.AppendLine("\t\t};");
 
-			sourceBuilder.AppendLine("\t}");
+		sourceBuilder.AppendLine("\t}");
 
-			sourceBuilder.AppendLine("}");
+		sourceBuilder.AppendLine("}");
 
-			sourceBuilder.AppendLine("""
+		sourceBuilder.AppendLine("""
 				/// <summary>
 				/// Auto-generated enumeration for all embedded resources in the assembly.
 				/// </summary>
@@ -176,31 +202,40 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 				{
 				""");
 
-			foreach (AdditionalText contextAdditionalFile in context.AdditionalFiles)
-			{
-				string resourceName =
-					EmbeddedResourceAccessGenerator.GetRelativePath(contextAdditionalFile.Path, mainDirectory);
-				resourceName = this.GetResourceName(resourceName);
-				string identifierName = this.GetValidIdentifierName(resourceName);
-				sourceBuilder.AppendLine($$"""
+		foreach (string path in paths)
+		{
+			string resourceName =
+				EmbeddedResourceAccessGenerator.GetRelativePath(path, mainDirectory);
+			resourceName = this.GetResourceName(resourceName);
+			string identifierName = this.GetValidIdentifierName(resourceName);
+			sourceBuilder.AppendLine($$"""
 					/// <summary>
 					/// Represents the embedded resource '{{resourceName}}'.
 					/// </summary>
 					{{identifierName}},
 				""");
-			}
-
-			sourceBuilder.AppendLine("}");
-			sourceBuilder.AppendLine("#nullable restore");
-
-			SourceText source = SourceText.From(sourceBuilder.ToString(), Encoding.UTF8);
-			context.AddSource("EmbeddedResources.generated.cs", source);
 		}
-		catch (Exception e)
+
+		sourceBuilder.AppendLine("}");
+		sourceBuilder.AppendLine("#nullable restore");
+
+		SourceText source = SourceText.From(sourceBuilder.ToString(), Encoding.UTF8);
+		context.AddSource("EmbeddedResources.generated.cs", source);
+	}
+
+	private static string GetRelativePath(string fullPath, string basePath)
+	{
+		if (!basePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
 		{
-			context.ReportDiagnostic(Diagnostic.Create(EmbeddedResourceAccessGenerator.generationWarning, Location.None,
-				e.Message, e.StackTrace));
+			basePath += Path.DirectorySeparatorChar;
 		}
+
+		Uri baseUri = new(basePath);
+		Uri fullUri = new(fullPath);
+
+		Uri relativeUri = baseUri.MakeRelativeUri(fullUri);
+
+		return relativeUri.ToString().Replace("/", Path.DirectorySeparatorChar.ToString());
 	}
 
 	private string GetResourceName(string resourceName)
@@ -214,7 +249,7 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 		sb.Replace('.', '_');
 
 		bool first = true;
-		for (var index = 0; index < resourceName.Length; index++)
+		for (int index = 0; index < resourceName.Length; index++)
 		{
 			char c = resourceName[index];
 			bool replace;
@@ -248,29 +283,8 @@ public class EmbeddedResourceAccessGenerator : ISourceGenerator
 
 			first = false;
 		}
-		
+
 		return sb.ToString();
-	}
-
-	/// <inheritdoc/>
-	public void Initialize(GeneratorInitializationContext context)
-	{
-		// Debugger.Launch();
-	}
-
-	private static string GetRelativePath(string fullPath, string basePath)
-	{
-		if (!basePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
-		{
-			basePath += Path.DirectorySeparatorChar;
-		}
-
-		Uri baseUri = new(basePath);
-		Uri fullUri = new(fullPath);
-
-		Uri relativeUri = baseUri.MakeRelativeUri(fullUri);
-
-		return relativeUri.ToString().Replace("/", Path.DirectorySeparatorChar.ToString());
 	}
 
 	private void Log(GeneratorExecutionContext context, string log)
