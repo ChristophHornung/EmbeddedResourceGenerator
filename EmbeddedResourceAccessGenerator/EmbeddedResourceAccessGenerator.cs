@@ -208,7 +208,7 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 		foreach (IGrouping<string, EmbeddedResourceItem> pathGrouped in embeddedResources.GroupBy(g =>
 			         Path.GetDirectoryName(g.RelativePath)))
 		{
-			string pathAsClassName = this.CleanPathName(pathGrouped.Key);
+			string pathAsClassName = this.PathAsClassname(pathGrouped.Key);
 			if (!string.IsNullOrEmpty(pathGrouped.Key))
 			{
 				sourceBuilder.AppendLine($$"""
@@ -235,7 +235,7 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 						return new StreamReader(assembly.GetManifestResourceStream(GetResourceName(resource))!);
 					}
 				""");
-				
+
 				sourceBuilder.AppendLine($$"""
 				
 					/// <summary>
@@ -292,7 +292,7 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 		foreach (IGrouping<string, EmbeddedResourceItem> pathGrouped in embeddedResources.GroupBy(g =>
 			         Path.GetDirectoryName(g.RelativePath)))
 		{
-			string pathAsClassName = this.CleanPathName(pathGrouped.Key);
+			string pathAsClassName = this.PathAsClassname(pathGrouped.Key);
 			if (!string.IsNullOrEmpty(pathGrouped.Key))
 			{
 				sourceBuilder.AppendLine($$"""
@@ -326,14 +326,55 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 		context.AddSource("EmbeddedResources.generated.cs", source);
 	}
 
-	private string GetResourceName(string resourceName)
+	private string GetResourceName(string resourcePath)
 	{
-		return resourceName.Replace('\\', '.').Replace('/', '.');
+		// return CreateManifestResourceName.MakeValidEverettIdentifier(resourcePath);
+		// If we reference Microsoft.Build.Tasks.Core we get this error on our referencing projects:
+		// Error	EMBRESGEN001	Exception 'Could not load file or assembly 'Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'
+		// or one of its dependencies. The system cannot find the file specified.'
+		// at EmbeddedResourceAccessGenerator.EmbeddedResourceAccessGenerator.GetResourceName(String resourcePath)
+
+		// So instead we implement the code ourselves.
+		StringBuilder manifestName = new();
+		// See https://github.com/dotnet/msbuild/blob/7cfb36cb90d1c9cc34bc4e0910d0c9ef42ee47b6/src/Tasks/CreateCSharpManifestResourceName.cs#L152
+		string? directoryName = Path.GetDirectoryName(resourcePath);
+		manifestName.Append(EverettIdentifierHelper.MakeValidEverettIdentifier(directoryName));
+		if (!string.IsNullOrEmpty(directoryName))
+		{
+			manifestName.Append('.');
+		}
+
+		manifestName.Append(Path.GetFileName(resourcePath));
+
+		return manifestName.ToString();
 	}
 
-	private string CleanPathName(string path)
+	private string PathAsClassname(string path)
 	{
-		return path.Replace("\\", string.Empty).Replace("/", string.Empty);
+		return this.GetValidIdentifierName(path.Replace("\\", string.Empty).Replace("/", string.Empty));
+	}
+
+	private string GetValidEverettIdentifierName(string resourceName)
+	{
+		StringBuilder sb = new(resourceName);
+
+		bool first = true;
+		for (int index = 0; index < resourceName.Length; index++)
+		{
+			char c = resourceName[index];
+			bool replace = first
+				? !EverettIdentifierHelper.IsValidEverettIdFirstChar(c)
+				: !EverettIdentifierHelper.IsValidEverettIdChar(c);
+
+			if (replace)
+			{
+				sb[index] = '_';
+			}
+
+			first = false;
+		}
+
+		return sb.ToString();
 	}
 
 	private string GetValidIdentifierName(string resourceName)
@@ -379,6 +420,7 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 
 		return sb.ToString();
 	}
+
 
 	private void Log(GeneratorExecutionContext context, string log)
 	{

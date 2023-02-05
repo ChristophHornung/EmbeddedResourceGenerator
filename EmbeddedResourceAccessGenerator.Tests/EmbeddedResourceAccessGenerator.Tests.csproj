@@ -7,15 +7,20 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="TestAssets\$$InvalidChars\Test.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<EmbeddedResource Include="2InvalidChars-%3b.txt" />
 		<EmbeddedResource Include="Test.txt" />
+		<EmbeddedResource Include="TestAssets\$$InvalidChars\Test.txt" />
 		<EmbeddedResource Include="TestAssets\Subfolder\Test.txt" />
 		<EmbeddedResource Include="TestAssets\2InvalidChars-%3b.txt" />
 		<EmbeddedResource Include="TestAssets\Test.txt" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
 		<PackageReference Include="xunit" Version="2.4.2" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
 			<PrivateAssets>all</PrivateAssets>

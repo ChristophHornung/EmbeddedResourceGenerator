@@ -1,5 +1,6 @@
 ﻿namespace EmbeddedResourceAccessGenerator.Tests.Tests;
 
+using System.Diagnostics;
 using Xunit;
 
 /// <summary>
@@ -54,6 +55,20 @@ public class EmbeddedResourceAccessGeneratorTests
 		Assert.Equal("Success", reader2.ReadToEnd());
 
 		using var reader3 = EmbeddedResourceTestAssets._InvalidChars___txt.GetReader();
+		Assert.Equal("Success", reader3.ReadToEnd());
+	}
+
+	[Fact]
+	public void InvalidCharsSubfolderTxtIsAccessible()
+	{
+		typeof(EmbeddedResource).Assembly.GetManifestResourceNames().ToList().ForEach(s => Debug.WriteLine(s));
+		using var reader = EmbeddedResource.TestAssets___InvalidChars_Test_txt.GetReader();
+		Assert.Equal("Success", reader.ReadToEnd());
+
+		using var reader2 = EmbeddedResources.TestAssets___InvalidChars_Test_txt_Reader;
+		Assert.Equal("Success", reader2.ReadToEnd());
+
+		using var reader3 = EmbeddedResourceTestAssets__InvalidChars.Test_txt.GetReader();
 		Assert.Equal("Success", reader3.ReadToEnd());
 	}
 
