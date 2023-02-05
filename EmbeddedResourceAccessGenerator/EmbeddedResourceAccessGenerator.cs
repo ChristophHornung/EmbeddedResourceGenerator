@@ -81,6 +81,16 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 	private void GenerateSource(SourceProductionContext context, IList<string> paths, string mainDirectory,
 		string? rootNamespace)
 	{
+		List<EmbeddedResourceItem> embeddedResources = new();
+		foreach (string path in paths)
+		{
+			string resourcePath =
+				EmbeddedResourceAccessGenerator.GetRelativePath(path, mainDirectory);
+			string resourceName = this.GetResourceName(resourcePath);
+			string identifierName = this.GetValidIdentifierName(resourceName);
+			embeddedResources.Add(new EmbeddedResourceItem(resourcePath, identifierName, resourceName));
+		}
+
 		StringBuilder sourceBuilder = new();
 		sourceBuilder.AppendLine($$"""
 				#nullable enable
@@ -97,13 +107,8 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 				{
 				""");
 
-		foreach (string path in paths)
+		foreach ((string _, string identifierName, string resourceName) in embeddedResources)
 		{
-			string resourceName =
-				EmbeddedResourceAccessGenerator.GetRelativePath(path, mainDirectory);
-			resourceName = this.GetResourceName(resourceName);
-			string identifierName = this.GetValidIdentifierName(resourceName);
-
 			sourceBuilder.AppendLine($$"""
 					/// <summary>
 					/// Gets the embedded resource '{{resourceName}}' as a stream.
@@ -172,13 +177,8 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 						{
 				""");
 
-		foreach (string path in paths)
+		foreach ((string _, string identifierName, string resourceName) in embeddedResources)
 		{
-			string resourceName =
-				EmbeddedResourceAccessGenerator.GetRelativePath(path, mainDirectory);
-			resourceName = this.GetResourceName(resourceName);
-			string identifierName = this.GetValidIdentifierName(resourceName);
-
 			sourceBuilder.AppendLine($$"""
 							EmbeddedResource.{{identifierName}} => "{{rootNamespace}}.{{resourceName}}",
 				""");
@@ -202,12 +202,8 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 				{
 				""");
 
-		foreach (string path in paths)
+		foreach ((string _, string identifierName, string resourceName) in embeddedResources)
 		{
-			string resourceName =
-				EmbeddedResourceAccessGenerator.GetRelativePath(path, mainDirectory);
-			resourceName = this.GetResourceName(resourceName);
-			string identifierName = this.GetValidIdentifierName(resourceName);
 			sourceBuilder.AppendLine($$"""
 					/// <summary>
 					/// Represents the embedded resource '{{resourceName}}'.
