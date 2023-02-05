@@ -16,6 +16,22 @@ embedded resources:
 
 E.g. for a `Test.txt` embedded resource in the `TestAsset` folder:
 
+- Via enum access through the `EmbeddedResource` enum:
+
+```csharp
+	// Via the generated extension methods on the enum
+	using Stream s = EmbeddedResource.TestAsset_Test_txt.GetStream();
+	using StreamReader sr = EmbeddedResource.TestAsset_Test_txt.GetReader();
+```
+
+- Via enum access through the `EmbeddedResource[FolderName]` enum:
+
+```csharp
+	// Via the generated extension methods on the enum
+	using Stream s = EmbeddedResourceTestAsset.Test_txt.GetStream();
+	using StreamReader sr = EmbeddedResourceTestAsset.Test_txt.GetReader();
+```
+
 - Via direct static acccess on `EmbeddedResources`:
 
 ```csharp
@@ -27,24 +43,12 @@ E.g. for a `Test.txt` embedded resource in the `TestAsset` folder:
 	// ...
 ```
 
-- Via enum access through the `EmbeddedResource` enum:
-
-```csharp
-	using StreamReader sr = EmbeddedResources.GetReader(EmbeddedResource.TestAsset_Test_txt);
-	Console.WriteLine(sr.ReadToEnd());
-
-	// Or via access through the Stream
-	using Stream s = EmbeddedResources.GetStream(EmbeddedResource.TestAsset_Test_txt);
-	// ...
-
-	// Or via extension method on the enum
-	using Stream s = EmbeddedResource.TestAsset_Test_txt.GetStream();
-	using StreamReader sr = EmbeddedResource.TestAsset_Test_txt.GetReader();
-```
-
 ## Motivation
 Instead of using magic strings in the resource access code that may point to non-existant
 resources this generator guarantees resources to exist and code to not compile when they are
 removed.
+
+Grouping the resources via their path adds path specific enums, e.g. to easily write tests
+for all embedded resource in a subfolder.
 
 Also it saves quite a bit of typing effort.

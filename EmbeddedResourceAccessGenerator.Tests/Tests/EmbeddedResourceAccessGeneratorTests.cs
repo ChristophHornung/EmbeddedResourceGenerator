@@ -16,6 +16,9 @@ public class EmbeddedResourceAccessGeneratorTests
 
 		using var reader2 = EmbeddedResources.TestAssets_Test_txt_Reader;
 		Assert.Equal("Success", reader2.ReadToEnd());
+
+		using var reader3 = EmbeddedResourceTestAssets.Test_txt.GetReader();
+		Assert.Equal("Success", reader3.ReadToEnd());
 	}
 
 	[Fact]
@@ -36,6 +39,9 @@ public class EmbeddedResourceAccessGeneratorTests
 
 		using var reader2 = EmbeddedResources.TestAssets_Subfolder_Test_txt_Reader;
 		Assert.Equal("Success", reader2.ReadToEnd());
+
+		using var reader3 = EmbeddedResourceTestAssetsSubfolder.Test_txt.GetReader();
+		Assert.Equal("Success", reader3.ReadToEnd());
 	}
 
 	[Fact]
@@ -46,6 +52,9 @@ public class EmbeddedResourceAccessGeneratorTests
 
 		using var reader2 = EmbeddedResources.TestAssets_2InvalidChars___txt_Reader;
 		Assert.Equal("Success", reader2.ReadToEnd());
+
+		using var reader3 = EmbeddedResourceTestAssets._InvalidChars___txt.GetReader();
+		Assert.Equal("Success", reader3.ReadToEnd());
 	}
 
 	[Fact]

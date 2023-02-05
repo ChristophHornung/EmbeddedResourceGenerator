@@ -63,6 +63,21 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 		context.RegisterSourceOutput(combined, this.GenerateSourceIncremental);
 	}
 
+	private static string GetRelativePath(string fullPath, string basePath)
+	{
+		if (!basePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
+		{
+			basePath += Path.DirectorySeparatorChar;
+		}
+
+		Uri baseUri = new(basePath);
+		Uri fullUri = new(fullPath);
+
+		Uri relativeUri = baseUri.MakeRelativeUri(fullUri);
+
+		return relativeUri.ToString().Replace("/", Path.DirectorySeparatorChar.ToString());
+	}
+
 	private void GenerateSourceIncremental(SourceProductionContext context,
 		(ImmutableArray<string> fileNames, string? rootNamespace, string? buildProjectDir) arg2)
 	{
@@ -140,7 +155,7 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 				""");
 		}
 
-		sourceBuilder.AppendLine($$"""
+		sourceBuilder.AppendLine("""
 					/// <summary>
 					/// Gets the embedded resource's stream.
 					/// </summary>
@@ -165,7 +180,7 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 
 				""");
 
-		sourceBuilder.AppendLine($$"""
+		sourceBuilder.AppendLine("""
 					/// <summary>
 					/// Gets the embedded resource's name in the format required by <c>GetManifestResourceStream</c>.
 					/// </summary>
@@ -184,17 +199,77 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 				""");
 		}
 
-		sourceBuilder.AppendLine($$"""
-							_ => throw new InvalidOperationException(),
-				""");
+		sourceBuilder.AppendLine("""			_ => throw new InvalidOperationException(),""");
 
 		sourceBuilder.AppendLine("\t\t};");
 
 		sourceBuilder.AppendLine("\t}");
 
+		foreach (IGrouping<string, EmbeddedResourceItem> pathGrouped in embeddedResources.GroupBy(g =>
+			         Path.GetDirectoryName(g.RelativePath)))
+		{
+			string pathAsClassName = this.CleanPathName(pathGrouped.Key);
+			if (!string.IsNullOrEmpty(pathGrouped.Key))
+			{
+				sourceBuilder.AppendLine($$"""
+				
+					/// <summary>
+					/// Gets the embedded resource's stream.
+					/// </summary>
+					/// <param name="resource">The embedded resource to retrieve the stream for.</param>
+					/// <returns>The stream to access the embedded resource.</returns>
+					public static Stream GetStream(this EmbeddedResource{{pathAsClassName}} resource)
+					{
+						Assembly assembly = typeof(EmbeddedResources).Assembly;
+						return assembly.GetManifestResourceStream(GetResourceName(resource))!;
+					}
+				
+					/// <summary>
+					/// Gets the embedded resource's stream-reader.
+					/// </summary>
+					/// <param name="resource">The embedded resource to retrieve the stream-reader for.</param>
+					/// <returns>The stream-reader to access the embedded resource.</returns>
+					public static StreamReader GetReader(this EmbeddedResource{{pathAsClassName}} resource)
+					{
+						Assembly assembly = typeof(EmbeddedResources).Assembly;
+						return new StreamReader(assembly.GetManifestResourceStream(GetResourceName(resource))!);
+					}
+				""");
+				
+				sourceBuilder.AppendLine($$"""
+				
+					/// <summary>
+					/// Gets the embedded resource's name in the format required by <c>GetManifestResourceStream</c>.
+					/// </summary>
+					/// <param name="resource">The embedded resource to retrieve the name for.</param>
+					/// <returns>The name to access the embedded resource.</returns>
+					public static string GetResourceName(this EmbeddedResource{{pathAsClassName}} resource)
+					{
+						return resource switch 
+						{
+				""");
+
+				foreach ((string relativePath, string identifierName, string resourceName) in pathGrouped)
+				{
+					string nonPathedIdentifierName = this.GetValidIdentifierName(Path.GetFileName(relativePath));
+
+					sourceBuilder.AppendLine($$"""
+							EmbeddedResource{{pathAsClassName}}.{{nonPathedIdentifierName}} => "{{rootNamespace}}.{{resourceName}}",
+				""");
+				}
+
+				sourceBuilder.AppendLine("""			_ => throw new InvalidOperationException(),""");
+
+				sourceBuilder.AppendLine("\t\t};");
+
+				sourceBuilder.AppendLine("\t}");
+			}
+		}
+
 		sourceBuilder.AppendLine("}");
 
 		sourceBuilder.AppendLine("""
+				
 				/// <summary>
 				/// Auto-generated enumeration for all embedded resources in the assembly.
 				/// </summary>
@@ -213,30 +288,52 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 		}
 
 		sourceBuilder.AppendLine("}");
-		sourceBuilder.AppendLine("#nullable restore");
+
+		foreach (IGrouping<string, EmbeddedResourceItem> pathGrouped in embeddedResources.GroupBy(g =>
+			         Path.GetDirectoryName(g.RelativePath)))
+		{
+			string pathAsClassName = this.CleanPathName(pathGrouped.Key);
+			if (!string.IsNullOrEmpty(pathGrouped.Key))
+			{
+				sourceBuilder.AppendLine($$"""
+						
+						/// <summary>
+						/// Auto-generated enumeration for all embedded resources in '{{pathGrouped.Key}}'.
+						/// </summary>
+						public enum EmbeddedResource{{pathAsClassName}}
+						{
+						""");
+
+				foreach (EmbeddedResourceItem item in pathGrouped)
+				{
+					string nonPathedIdentifierName = this.GetValidIdentifierName(Path.GetFileName(item.RelativePath));
+
+					sourceBuilder.AppendLine($$"""
+							/// <summary>
+							/// Represents the embedded resource '{{Path.GetFileName(item.RelativePath)}}' in {{pathGrouped.Key}}.
+							/// </summary>
+							{{nonPathedIdentifierName}},
+						""");
+				}
+
+				sourceBuilder.AppendLine("}");
+			}
+		}
+
+		sourceBuilder.Append("#nullable restore");
 
 		SourceText source = SourceText.From(sourceBuilder.ToString(), Encoding.UTF8);
 		context.AddSource("EmbeddedResources.generated.cs", source);
 	}
 
-	private static string GetRelativePath(string fullPath, string basePath)
-	{
-		if (!basePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
-		{
-			basePath += Path.DirectorySeparatorChar;
-		}
-
-		Uri baseUri = new(basePath);
-		Uri fullUri = new(fullPath);
-
-		Uri relativeUri = baseUri.MakeRelativeUri(fullUri);
-
-		return relativeUri.ToString().Replace("/", Path.DirectorySeparatorChar.ToString());
-	}
-
 	private string GetResourceName(string resourceName)
 	{
 		return resourceName.Replace('\\', '.').Replace('/', '.');
+	}
+
+	private string CleanPathName(string path)
+	{
+		return path.Replace("\\", string.Empty).Replace("/", string.Empty);
 	}
 
 	private string GetValidIdentifierName(string resourceName)
