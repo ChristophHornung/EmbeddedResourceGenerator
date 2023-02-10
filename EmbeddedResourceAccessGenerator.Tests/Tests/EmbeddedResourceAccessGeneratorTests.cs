@@ -23,6 +23,32 @@ public class EmbeddedResourceAccessGeneratorTests
 	}
 
 	[Fact]
+	public void TestWithSpacesTxtIsAccessible()
+	{
+		using var reader = EmbeddedResource.TestAssets_Test_With_Spaces_txt.GetReader();
+		Assert.Equal("Success", reader.ReadToEnd());
+
+		using var reader2 = EmbeddedResources.TestAssets_Test_With_Spaces_txt_Reader;
+		Assert.Equal("Success", reader2.ReadToEnd());
+
+		using var reader3 = EmbeddedResourceTestAssets.Test_With_Spaces_txt.GetReader();
+		Assert.Equal("Success", reader3.ReadToEnd());
+	}
+
+	[Fact]
+	public void SubfolderTestWithSpacesTxtIsAccessible()
+	{
+		using var reader = EmbeddedResource.TestAssets_Subfolder_With_Spaces_Test_With_Spaces_txt.GetReader();
+		Assert.Equal("Success", reader.ReadToEnd());
+
+		using var reader2 = EmbeddedResources.TestAssets_Subfolder_With_Spaces_Test_With_Spaces_txt_Reader;
+		Assert.Equal("Success", reader2.ReadToEnd());
+
+		using var reader3 = EmbeddedResourceTestAssetsSubfolder_With_Spaces.Test_With_Spaces_txt.GetReader();
+		Assert.Equal("Success", reader3.ReadToEnd());
+	}
+
+	[Fact]
 	public void RootTestTxtIsAccessible()
 	{
 		using var reader = EmbeddedResource.Test_txt.GetReader();

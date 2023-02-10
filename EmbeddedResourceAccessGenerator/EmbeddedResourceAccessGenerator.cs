@@ -100,9 +100,10 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 		foreach (string path in paths)
 		{
 			string resourcePath =
-				EmbeddedResourceAccessGenerator.GetRelativePath(path, mainDirectory);
+				EmbeddedResourceAccessGenerator.GetRelativePath(path, mainDirectory).Replace("%20"," ");
+
 			string resourceName = this.GetResourceName(resourcePath);
-			string identifierName = this.GetValidIdentifierName(resourceName);
+			string identifierName = this.GetValidIdentifierName(resourcePath);
 			embeddedResources.Add(new EmbeddedResourceItem(resourcePath, identifierName, resourceName));
 		}
 
