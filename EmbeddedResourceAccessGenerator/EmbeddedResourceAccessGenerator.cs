@@ -96,6 +96,11 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 	private void GenerateSource(SourceProductionContext context, IList<string> paths, string mainDirectory,
 		string? rootNamespace)
 	{
+		if (!paths.Any())
+		{
+			return;
+		}
+
 		List<EmbeddedResourceItem> embeddedResources = new();
 		foreach (string path in paths)
 		{
