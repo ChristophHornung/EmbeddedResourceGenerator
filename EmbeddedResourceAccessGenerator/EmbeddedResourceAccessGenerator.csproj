@@ -7,13 +7,15 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>Christoph Hornung</Authors>
 		<PackageId>Chorn.EmbeddedResourceAccessGenerator</PackageId>
-		<Version>1.1.4</Version>
+		<Version>1.1.5</Version>
 		<Copyright>Christoph Hornung</Copyright>
 		<Description>Generates strongly typed access methods for embedded resources.</Description>
 		<PackageProjectUrl>https://github.com/ChristophHornung/EmbeddedResourceGenerator</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/ChristophHornung/EmbeddedResourceGenerator</RepositoryUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageReleaseNotes>
+			v.1.1.5
+			- Marked the nuget as a development dependency.
 			v.1.1.4
 			- No longer generating classes when no resources are present.
 			v.1.1.3
@@ -28,6 +30,7 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<DevelopmentDependency>true</DevelopmentDependency>
 		<PackageTags>embeddedresource;manifestresource;code-generator;source-generator;csharp</PackageTags>
 	</PropertyGroup>
 
