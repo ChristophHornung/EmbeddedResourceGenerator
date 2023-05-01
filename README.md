@@ -1,5 +1,5 @@
 # EmbeddedResourceAccessGenerator
-[![NuGet version (Chorn.EmbeddedResourceAccessGenerator)](https://img.shields.io/nuget/v/Chorn.EmbeddedResourceAccessGenerator.svg?style=flat-square)](https://www.nuget.org/packages/Chorng.EmbeddedResourceAccessGenerator/)
+[![NuGet version (Chorn.EmbeddedResourceAccessGenerator)](https://img.shields.io/nuget/v/Chorn.EmbeddedResourceAccessGenerator.svg?style=flat-square)](https://www.nuget.org/packages/Chorn.EmbeddedResourceAccessGenerator/)
 
 
 The EmbeddedResourceAccessGenerator is a code generator to allow easy access to all
