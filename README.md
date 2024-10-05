@@ -9,7 +9,7 @@ embedded resources and content files.
 Get the nuget package [here](https://www.nuget.org/packages/Chorn.AssetAccessGenerator).
 
 After referencing the `Chorn.AssetAccessGenerator` nuget the code generation will
-automatically create a class `EmbeddedResources` and/or `ContentFilesExtensions` in the root namespace of the project.
+automatically create a class `EmbeddedResources` and `ContentFilesExtensions` in the root namespace of the project.
 
 Together with the generated `EmbeddedResource` and `ContentFile` enumeration there are several options to access
 embedded resources and content files:
