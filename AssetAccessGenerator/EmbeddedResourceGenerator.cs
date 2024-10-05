@@ -1,4 +1,4 @@
-﻿namespace ResourceAccessGenerator;
+﻿namespace AssetAccessGenerator;
 
 using System.Text;
 using Microsoft.CodeAnalysis;

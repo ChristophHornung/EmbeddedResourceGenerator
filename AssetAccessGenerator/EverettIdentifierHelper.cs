@@ -1,4 +1,4 @@
-namespace ResourceAccessGenerator;
+namespace AssetAccessGenerator;
 
 using System.Globalization;
 using System.Text;

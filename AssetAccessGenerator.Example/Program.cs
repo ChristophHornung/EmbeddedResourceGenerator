@@ -1,4 +1,4 @@
-﻿namespace ResourceAccessGenerator.Example;
+﻿namespace AssetAccessGenerator.Example;
 
 internal class Program
 {

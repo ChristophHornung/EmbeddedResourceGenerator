@@ -1,4 +1,4 @@
-﻿namespace ResourceAccessGenerator;
+﻿namespace AssetAccessGenerator;
 
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis;
 /// The generator for the embedded and included resource access.
 /// </summary>
 [Generator]
-public class ResourceAccessGenerator : IIncrementalGenerator
+public class AssetAccessGenerator : IIncrementalGenerator
 {
 	private static readonly DiagnosticDescriptor generationWarning = new DiagnosticDescriptor(
 		id: "RESGEN001",
@@ -84,9 +84,9 @@ public class ResourceAccessGenerator : IIncrementalGenerator
 		IncrementalValueProvider<GenerationContext> combined = additionaFilesProvider
 				.Combine(rootNamespaceProvider.Combine(buildProjectDirProvider)).Select((c, _) =>
 					(c.Left, c.Right.Left, c.Right.Right))
-				.Select(ResourceAccessGenerator.MapToResourceGenerationContext);
+				.Select(AssetAccessGenerator.MapToResourceGenerationContext);
 
-		context.RegisterSourceOutput(combined, ResourceAccessGenerator.GenerateSourceIncremental);
+		context.RegisterSourceOutput(combined, AssetAccessGenerator.GenerateSourceIncremental);
 	}
 
 	private static GenerationContext MapToResourceGenerationContext((ImmutableArray<(string Path, ResourceKind Kind)>, string?, string? Right) tuple, CancellationToken cancellationToken)
@@ -107,12 +107,12 @@ public class ResourceAccessGenerator : IIncrementalGenerator
 	{
 		try
 		{
-			ResourceAccessGenerator.GenerateSource(context, resourcesContext);
+			AssetAccessGenerator.GenerateSource(context, resourcesContext);
 		}
 		catch (Exception e)
 		{
 			// We generate a diagnostic message on all internal failures.
-			context.ReportDiagnostic(Diagnostic.Create(ResourceAccessGenerator.generationWarning, Location.None,
+			context.ReportDiagnostic(Diagnostic.Create(AssetAccessGenerator.generationWarning, Location.None,
 				e.Message, e.StackTrace));
 		}
 	}
@@ -133,7 +133,7 @@ public class ResourceAccessGenerator : IIncrementalGenerator
 	private void Log(SourceProductionContext context, string log)
 	{
 #if DEBUG
-		context.ReportDiagnostic(Diagnostic.Create(ResourceAccessGenerator.logInfo, Location.None, log));
+		context.ReportDiagnostic(Diagnostic.Create(AssetAccessGenerator.logInfo, Location.None, log));
 #endif
 	}
 }

@@ -1,4 +1,4 @@
-﻿namespace ResourceAccessGenerator;
+﻿namespace AssetAccessGenerator;
 
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -62,41 +62,42 @@ public static class AdditionalFileGenerator
 		                           	/// <summary>
 		                           	/// Gets the additional file's stream.
 		                           	/// </summary>
-		                           	/// <param name="resource">The additional file to retrieve the stream for.</param>
+		                           	/// <param name="file">The additional file to retrieve the stream for.</param>
 		                           	/// <returns>The stream to access the additional file.</returns>
-		                           	public static Stream GetStream(this AdditionalFile resource)
+		                           	public static Stream GetStream(this AdditionalFile file)
 		                           	{
-		                           		return File.OpenRead(GetResourcePath(resource))!;
+		                           		return File.OpenRead(GetAdditionalFilePath(file))!;
 		                           	}
 		                           
 		                           	/// <summary>
 		                           	/// Gets the additional file's stream-reader.
 		                           	/// </summary>
-		                           	/// <param name="resource">The additional file to retrieve the stream-reader for.</param>
+		                           	/// <param name="file">The additional file to retrieve the stream-reader for.</param>
 		                           	/// <returns>The stream-reader to access the additional file.</returns>
-		                           	public static StreamReader GetReader(this AdditionalFile resource)
+		                           	public static StreamReader GetReader(this AdditionalFile file)
 		                           	{
-		                           		return new StreamReader(File.OpenRead(GetResourcePath(resource))!, leaveOpen:false);
+		                           		return new StreamReader(File.OpenRead(GetAdditionalFilePath(file))!, leaveOpen:false);
 		                           	}
 		                           	
 		                           	/// <summary>
 		                           	/// Reads the additional file's text asynchronously.
 		                           	/// </summary>
-		                           	/// <param name="resource">The additional file to retrieve the stream-reader for.</param>
+		                           	/// <param name="file">The additional file to read all text.</param>
+		                           	/// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
 		                           	/// <returns>text.</returns>
-		                           	public static async Task<string> ReadAllTextAsync(this AdditionalFile resource)
+		                           	public static async Task<string> ReadAllTextAsync(this AdditionalFile file, CancellationToken cancellationToken = default(CancellationToken))
 		                           	{
-		                           	    return await File.ReadAllTextAsync(GetResourcePath(resource))!;
+		                           	    return await File.ReadAllTextAsync(GetAdditionalFilePath(file), cancellationToken)!;
 		                           	}
 		                           	
 		                           	/// <summary>
 		                           	/// Reads the additional file's text.
 		                           	/// </summary>
-		                           	/// <param name="resource">The additional file to retrieve the stream-reader for.</param>
+		                           	/// <param name="resource">The additional file to read all text.</param>
 		                           	/// <returns>text.</returns>
-		                           	public static string ReadAllText(this AdditionalFile resource)
+		                           	public static string ReadAllText(this AdditionalFile file)
 		                           	{
-		                           	    return File.ReadAllText(GetResourcePath(resource))!;
+		                           	    return File.ReadAllText(GetAdditionalFilePath(file))!;
 		                           	}
 		                           	
 		                           """);
@@ -105,11 +106,11 @@ public static class AdditionalFileGenerator
 		                         	/// <summary>
 		                         	/// Gets the additional file's path.
 		                         	/// </summary>
-		                         	/// <param name="resource">The additional file to retrieve the name for.</param>
+		                         	/// <param name="file">The additional file to retrieve the name for.</param>
 		                         	/// <returns>The path to access the additional file.</returns>
-		                         	public static string GetResourcePath(this AdditionalFile resource)
+		                         	public static string GetAdditionalFilePath(this AdditionalFile file)
 		                         	{
-		                         		return resource switch 
+		                         		return file switch 
 		                         		{
 		                         """);
 
@@ -137,41 +138,42 @@ public static class AdditionalFileGenerator
 				                           	/// <summary>
 				                           	/// Gets the additional file's stream.
 				                           	/// </summary>
-				                           	/// <param name="resource">The additional file to retrieve the stream for.</param>
+				                           	/// <param name="file">The additional file to retrieve the stream for.</param>
 				                           	/// <returns>The stream to access the additional file.</returns>
-				                           	public static Stream GetStream(this AdditionalFile_{{{pathAsClassName}}} resource)
+				                           	public static Stream GetStream(this AdditionalFile_{{{pathAsClassName}}} file)
 				                           	{
-				                           		return File.OpenRead(GetResourcePath(resource))!;
+				                           		return File.OpenRead(GetAdditionalFilePath(file))!;
 				                           	}
 				                           
 				                           	/// <summary>
 				                           	/// Gets the additional file's stream-reader.
 				                           	/// </summary>
-				                           	/// <param name="resource">The additional file to retrieve the stream-reader for.</param>
+				                           	/// <param name="file">The additional file to retrieve the stream-reader for.</param>
 				                           	/// <returns>The stream-reader to access the additional file.</returns>
-				                           	public static StreamReader GetReader(this AdditionalFile_{{{pathAsClassName}}} resource)
+				                           	public static StreamReader GetReader(this AdditionalFile_{{{pathAsClassName}}} file)
 				                           	{
-				                           		return new StreamReader(File.OpenRead(GetResourcePath(resource))!, leaveOpen:false);
+				                           		return new StreamReader(File.OpenRead(GetAdditionalFilePath(file))!, leaveOpen:false);
 				                           	}
 				                           	
 				                           	/// <summary>
-				                           	/// Reads the additional file's text asynchronously.
-				                           	/// </summary>
-				                           	/// <param name="resource">The additional file to retrieve the stream-reader for.</param>
-				                           	/// <returns>text.</returns>
-				                           	public static async Task<string> ReadAllTextAsync(this AdditionalFile_{{{pathAsClassName}}} resource)
+				                            /// Reads the additional file's text asynchronously.
+				                            /// </summary>
+				                            /// <param name="file">The additional file to read all text.</param>
+				                            /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
+				                            /// <returns>text.</returns>
+				                           	public static async Task<string> ReadAllTextAsync(this AdditionalFile_{{{pathAsClassName}}} file, CancellationToken cancellationToken = default(CancellationToken))
 				                           	{
-				                           		return await File.ReadAllTextAsync(GetResourcePath(resource))!;
+				                           		return await File.ReadAllTextAsync(GetAdditionalFilePath(file), cancellationToken)!;
 				                           	}
 				                           	
 				                           	/// <summary>
 				                           	/// Reads the additional file's text.
 				                           	/// </summary>
-				                           	/// <param name="resource">The additional file to retrieve the stream-reader for.</param>
+				                           	/// <param name="file">The additional file to read all text.</param>
 				                           	/// <returns>text.</returns>
-				                           	public static string ReadAllText(this AdditionalFile_{{{pathAsClassName}}} resource)
+				                           	public static string ReadAllText(this AdditionalFile_{{{pathAsClassName}}} file)
 				                           	{
-				                           		return File.ReadAllText(GetResourcePath(resource))!;
+				                           		return File.ReadAllText(GetAdditionalFilePath(file))!;
 				                           	}
 				                           	
 				                           """);
@@ -181,11 +183,11 @@ public static class AdditionalFileGenerator
 				                           	/// <summary>
 				                           	/// Gets the additional file's name in the format required by <c>GetManifestResourceStream</c>.
 				                           	/// </summary>
-				                           	/// <param name="resource">The additional file to retrieve the name for.</param>
+				                           	/// <param name="file">The additional file to retrieve the name for.</param>
 				                           	/// <returns>The name to access the additional file.</returns>
-				                           	public static string GetResourcePath(this AdditionalFile_{{pathAsClassName}} resource)
+				                           	public static string GetAdditionalFilePath(this AdditionalFile_{{pathAsClassName}} file)
 				                           	{
-				                           		return resource switch 
+				                           		return file switch 
 				                           		{
 				                           """);
 
