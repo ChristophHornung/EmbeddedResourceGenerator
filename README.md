@@ -1,14 +1,14 @@
-# EmbeddedResourceAccessGenerator
-[![NuGet version (Chorn.EmbeddedResourceAccessGenerator)](https://img.shields.io/nuget/v/Chorn.EmbeddedResourceAccessGenerator.svg?style=flat-square)](https://www.nuget.org/packages/Chorn.EmbeddedResourceAccessGenerator/)
+# ResourceAccessGenerator
+[![NuGet version (Chorn.ResourceAccessGenerator)](https://img.shields.io/nuget/v/Chorn.ResourceAccessGenerator.svg?style=flat-square)](https://www.nuget.org/packages/Chorn.ResourceAccessGenerator/)
 
 
-The EmbeddedResourceAccessGenerator is a code generator to allow easy access to all
-embedded resources.
+The ResourceAccessGenerator is a code generator to allow easy access to all
+embedded and included resources.
 
 ## Usage
-Get the nuget package [here](https://www.nuget.org/packages/Chorn.EmbeddedResourceAccessGenerator).
+Get the nuget package [here](https://www.nuget.org/packages/Chorn.ResourceAccessGenerator).
 
-After referencing the `Chorn.EmbeddedResourceAccessGenerator` nuget the code generation will
+After referencing the `Chorn.ResourceAccessGenerator` nuget the code generation will
 automatically create a class `EmbeddedResources` in the root namespace of the project.
 
 Together with the generated `EmbeddedResource` enumeration there are several options to access
@@ -30,17 +30,6 @@ E.g. for a `Test.txt` embedded resource in the `TestAsset` folder:
 	// Via the generated extension methods on the enum
 	using Stream s = EmbeddedResourceTestAsset.Test_txt.GetStream();
 	using StreamReader sr = EmbeddedResourceTestAsset.Test_txt.GetReader();
-```
-
-- Via direct static acccess on `EmbeddedResources`:
-
-```csharp
-	using StreamReader sr = EmbeddedResources.TestAsset_Test_txt_Reader;
-	Console.WriteLine(sr.ReadToEnd());
-
-	// Or via access through the Stream
-	using Stream s = EmbeddedResources.TestAsset_Test_txt_Stream;
-	// ...
 ```
 
 ## Motivation

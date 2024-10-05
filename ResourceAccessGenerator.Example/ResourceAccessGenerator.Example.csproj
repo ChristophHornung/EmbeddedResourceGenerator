@@ -15,7 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Chorn.EmbeddedResourceAccessGenerator" Version="*-*">
+	  <PackageReference Include="Chorn.EmbeddedResourceAccessGenerator" Version="1.1.5">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>

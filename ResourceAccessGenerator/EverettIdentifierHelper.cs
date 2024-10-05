@@ -1,4 +1,4 @@
-namespace EmbeddedResourceAccessGenerator;
+namespace ResourceAccessGenerator;
 
 using System.Globalization;
 using System.Text;
@@ -36,7 +36,7 @@ internal static class EverettIdentifierHelper
 	/// <summary>
 	/// Is the character a valid first Everett identifier character?
 	/// </summary>
-	public static bool IsValidEverettIdFirstChar(char c)
+	private static bool IsValidEverettIdFirstChar(char c)
 	{
 		return
 			char.IsLetter(c) ||
@@ -46,7 +46,7 @@ internal static class EverettIdentifierHelper
 	/// <summary>
 	/// Is the character a valid Everett identifier character?
 	/// </summary>
-	public static bool IsValidEverettIdChar(char c)
+	private static bool IsValidEverettIdChar(char c)
 	{
 		UnicodeCategory cat = CharUnicodeInfo.GetUnicodeCategory(c);
 

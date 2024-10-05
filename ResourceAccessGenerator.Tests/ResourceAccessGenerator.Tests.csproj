@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="TestAssets\$$InvalidChars\Test.txt" />
+	  <None Remove="TestAssets\Subfolder With Spaces\Test With Spaces.txt" />
+	  <None Remove="TestAssets\Test With Spaces.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+		<PackageReference Include="xunit" Version="2.9.2" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+
+  <!--This is mandatory to be able to add some metadata visible to compiler-->
+	<ItemGroup>
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GenerateIncludedResourceAccess" />
+		<CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="GenerateEmbeddedResourceAccess" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<!--Pay attention - here the GenerateIncludedStaticAccess attribute is used (declared above) -->
+		<AdditionalFiles Include="TestIncludedAssets\**\*.*" GenerateIncludedResourceAccess="true">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</AdditionalFiles>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="TestAssets\**\*.*" GenerateEmbeddedResourceAccess="true" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\ResourceAccessGenerator\ResourceAccessGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<!-- Update the property to include all EmbeddedResource files -->
+		<AdditionalFileItemNames>$(AdditionalFileItemNames);EmbeddedResource</AdditionalFileItemNames>
+	</PropertyGroup>
+</Project>

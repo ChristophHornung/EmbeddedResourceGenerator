@@ -6,4 +6,4 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|--------------------
-EMBRESGEN001  |  MessageExtensionGenerator   |  Error | An unknown exception occured during generation.
+RESGEN001  |  ResourceAccessGenerator   |  Error | An unknown exception occured during generation.

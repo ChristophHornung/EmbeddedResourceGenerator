@@ -1,0 +1,11 @@
+﻿<Project>
+	<PropertyGroup>
+		<!-- Include all EmbeddedResource files as additional file names.-->
+		<AdditionalFileItemNames>$(AdditionalFileItemNames);EmbeddedResource</AdditionalFileItemNames>
+	</PropertyGroup>
+	<!--This is mandatory to be able to add some metadata visible to compiler-->
+	<ItemGroup>
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GenerateIncludedResourceAccess" />
+		<CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="GenerateEmbeddedResourceAccess" />
+	</ItemGroup>
+</Project>

@@ -1,4 +1,4 @@
-﻿namespace EmbeddedResourceAccessGenerator.Example;
+﻿namespace ResourceAccessGenerator.Example;
 
 internal class Program
 {

@@ -1,4 +1,4 @@
-﻿namespace EmbeddedResourceAccessGenerator.Tests.Tests;
+﻿namespace ResourceAccessGenerator.Tests.Tests;
 
 using System.Diagnostics;
 using Xunit;
@@ -9,6 +9,25 @@ using Xunit;
 /// </summary>
 public class EmbeddedResourceAccessGeneratorTests
 {
+	[Fact]
+	public async Task IncludedTestTxtIsAccessible()
+	{
+		using var reader = IncludedResource.TestIncludedAssets_IncludedTest_txt.GetReader();
+		Assert.Equal("Success", await reader.ReadToEndAsync());
+
+		var text = IncludedResource.TestIncludedAssets_IncludedTest_txt.ReadAllText();
+		Assert.Equal("Success", text);
+
+		var text2 = await IncludedResource.TestIncludedAssets_IncludedTest_txt.ReadAllTextAsync();
+		Assert.Equal("Success", text2);
+
+		var text3 = await IncludedResource_TestIncludedAssets_OneMoreLevel.Test_txt.ReadAllTextAsync();
+		Assert.Equal("Success", text3);
+
+		using var reader3 = IncludedResource_TestIncludedAssets.IncludedTest_txt.GetReader();
+		Assert.Equal("Success", await reader3.ReadToEndAsync());
+	}
+
 	[Fact]
 	public void TestTxtIsAccessible()
 	{
@@ -51,10 +70,10 @@ public class EmbeddedResourceAccessGeneratorTests
 	[Fact]
 	public void RootTestTxtIsAccessible()
 	{
-		using var reader = EmbeddedResource.Test_txt.GetReader();
+		using var reader = EmbeddedResource.TestAssets_Test_txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
 
-		using var reader2 = EmbeddedResources.Test_txt_Reader;
+		using var reader2 = EmbeddedResources.TestAssets_Test_txt_Reader;
 		Assert.Equal("Success", reader2.ReadToEnd());
 	}
 
@@ -101,10 +120,10 @@ public class EmbeddedResourceAccessGeneratorTests
 	[Fact]
 	public void InvalidCharsRootTxtIsAccessible()
 	{
-		using var reader = EmbeddedResource._InvalidChars___txt.GetReader();
+		using var reader = EmbeddedResource.TestAssets_2InvalidChars___txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
 
-		using var reader2 = EmbeddedResources._InvalidChars___txt_Reader;
+		using var reader2 = EmbeddedResources.TestAssets___InvalidChars_Test_txt_Reader;
 		Assert.Equal("Success", reader2.ReadToEnd());
 	}
 }
