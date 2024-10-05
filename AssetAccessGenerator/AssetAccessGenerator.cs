@@ -10,19 +10,19 @@ using Microsoft.CodeAnalysis;
 public class AssetAccessGenerator : IIncrementalGenerator
 {
 	private static readonly DiagnosticDescriptor generationWarning = new DiagnosticDescriptor(
-		id: "RESGEN001",
+		id: "AAGEN001",
 		title: "Exception on generation",
 		messageFormat: "Exception '{0}' {1}",
-		category: "ResourceAccessGenerator",
+		category: "AssetAccessGenerator",
 		DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
 #if DEBUG
 	private static readonly DiagnosticDescriptor logInfo = new DiagnosticDescriptor(
-		id: "RESGENLOG",
+		id: "AAGENLOG",
 		title: "Log",
 		messageFormat: "{0}",
-		category: "ResourceAccessGenerator",
+		category: "AssetAccessGenerator",
 		DiagnosticSeverity.Warning,
 		isEnabledByDefault: true);
 #endif
@@ -103,11 +103,11 @@ public class AssetAccessGenerator : IIncrementalGenerator
 		], rootNamespace);
 	}
 
-	private static void GenerateSourceIncremental(SourceProductionContext context, GenerationContext resourcesContext)
+	private static void GenerateSourceIncremental(SourceProductionContext context, GenerationContext generationContext)
 	{
 		try
 		{
-			AssetAccessGenerator.GenerateSource(context, resourcesContext);
+			AssetAccessGenerator.GenerateSource(context, generationContext);
 		}
 		catch (Exception e)
 		{
@@ -118,17 +118,16 @@ public class AssetAccessGenerator : IIncrementalGenerator
 	}
 
 
-	private static void GenerateSource(SourceProductionContext context, GenerationContext resourcesContext)
+	private static void GenerateSource(SourceProductionContext context, GenerationContext generationContext)
 	{
-		if (resourcesContext.IsEmpty)
+		if (generationContext.IsEmpty || string.IsNullOrWhiteSpace(generationContext.RootNamespace))
 		{
 			return;
 		}
 
-		EmbeddedResourceGenerator.GenerateCode(context, resourcesContext);
-		AdditionalFileGenerator.GenerateCode(context, resourcesContext);
+		EmbeddedResourceGenerator.GenerateCode(context, generationContext);
+		AdditionalFileGenerator.GenerateCode(context, generationContext);
 	}
-
 
 	private void Log(SourceProductionContext context, string log)
 	{

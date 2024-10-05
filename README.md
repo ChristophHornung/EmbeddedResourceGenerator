@@ -1,5 +1,5 @@
-# ResourceAccessGenerator
-[![NuGet version (Chorn.AssetAccessGenerator)](https://img.shields.io/nuget/v/Chorn.ResourceAccessGenerator.svg?style=flat-square)](https://www.nuget.org/packages/Chorn.ResourceAccessGenerator/)
+# AssetAccessGenerator
+[![NuGet version (Chorn.AssetAccessGenerator)](https://img.shields.io/nuget/v/Chorn.AssetAccessGenerator.svg?style=flat-square)](https://www.nuget.org/packages/Chorn.AssetAccessGenerator/)
 
 
 The AssetAccessGenerator is a code generator to allow easy access to all

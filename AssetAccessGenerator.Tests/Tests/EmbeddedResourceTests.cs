@@ -7,7 +7,7 @@ using Xunit;
 /// The main tests. This file is deliberately not in the root folder to test that the generator works no
 /// files in the csproj folder.
 /// </summary>
-public class EmbeddedResourceAccessGeneratorTests
+public class EmbeddedAssetAccessGeneratorTests
 {
 	[Fact]
 	public void TestTxtIsAccessible()

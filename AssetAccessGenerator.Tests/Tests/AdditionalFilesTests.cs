@@ -2,7 +2,7 @@
 
 using Xunit;
 
-public class AdditionalFilesGeneratorTests
+public class AdditionalFilesTests
 {
 	[Fact]
 	public async Task IncludedTestTxtIsAccessible()
@@ -13,7 +13,7 @@ public class AdditionalFilesGeneratorTests
 		var text = AdditionalFile.TestIncludedAssets_IncludedTest_txt.ReadAllText();
 		Assert.Equal("Success", text);
 
-		var text2 = await AdditionalFile.TestIncludedAssets_IncludedTest_txt.ReadAllTextAsync();
+		var text2 = await AdditionalFile.TestIncludedAssets_IncludedTest_txt.ReadAllTextAsync(CancellationToken.None);
 		Assert.Equal("Success", text2);
 
 		var text3 = await AdditionalFile_TestIncludedAssets_OneMoreLevel.Test_txt.ReadAllTextAsync();

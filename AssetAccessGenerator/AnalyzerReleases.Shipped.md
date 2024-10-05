@@ -6,4 +6,4 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|--------------------
-RESGEN001  |  ResourceAccessGenerator   |  Error | An unknown exception occured during generation.
+AAGEN001  |  AssetAccessGenerator   |  Error | An unknown exception occured during generation.

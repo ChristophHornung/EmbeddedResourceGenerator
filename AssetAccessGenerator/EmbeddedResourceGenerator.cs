@@ -6,9 +6,9 @@ using Microsoft.CodeAnalysis.Text;
 
 public static class EmbeddedResourceGenerator
 {
-	public static void GenerateCode(SourceProductionContext context, GenerationContext resourcesContext)
+	public static void GenerateCode(SourceProductionContext context, GenerationContext generationContext)
 	{
-		var embeddedResources = resourcesContext.With(ResourceKind.EmbeddedResource);
+		var embeddedResources = generationContext.With(ResourceKind.EmbeddedResource);
 
 		if (embeddedResources.IsEmpty)
 		{

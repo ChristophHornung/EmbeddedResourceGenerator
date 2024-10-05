@@ -24,9 +24,9 @@ internal static class Utils
 	{
 		// return CreateManifestResourceName.MakeValidEverettIdentifier(resourcePath);
 		// If we reference Microsoft.Build.Tasks.Core we get this error on our referencing projects:
-		// Error	EMBRESGEN001	Exception 'Could not load file or assembly 'Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'
+		// Error AAGEN001 Exception 'Could not load file or assembly 'Microsoft.Build.Tasks.Core, Version=15.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'
 		// or one of its dependencies. The system cannot find the file specified.'
-		// at EmbeddedResourceAccessGenerator.EmbeddedResourceAccessGenerator.GetResourceName(String resourcePath)
+		// at AssetAccessGenerator.AssetAccessGenerator.GetResourceName(String resourcePath)
 
 		// So instead we implement the code ourselves.
 		StringBuilder manifestName = new();
