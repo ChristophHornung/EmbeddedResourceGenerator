@@ -39,14 +39,14 @@ public record ResourceItem(
 public enum ResourceKind
 {
     Unspecified,
-    Embedded,
-    Included
+    EmbeddedResource,
+    AdditionalFile
 }
 
 /// <summary>
 /// Represents the context for resource generation.
 /// </summary>
-public record ResourceGenerationContext(ImmutableArray<ResourceItem> Resources, string RootNamespace) : IEnumerable<ResourceItem>
+public record GenerationContext(ImmutableArray<ResourceItem> Resources, string RootNamespace) : IEnumerable<ResourceItem>
 {
     private ImmutableArray<ResourceItem> Resources = Resources;
 
@@ -60,7 +60,7 @@ public record ResourceGenerationContext(ImmutableArray<ResourceItem> Resources, 
     /// </summary>
     /// <param name="kind">The resource kind.</param>
     /// <returns>A new resource generation context.</returns>
-    public ResourceGenerationContext With(ResourceKind kind)
+    public GenerationContext With(ResourceKind kind)
     {
         return this with { Resources = this.Resources.Where(x => x.ResourceKind == kind).ToImmutableArray() };
     }

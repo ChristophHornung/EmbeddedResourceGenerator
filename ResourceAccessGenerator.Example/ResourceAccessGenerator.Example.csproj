@@ -2,22 +2,37 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net7.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="RootTest - incl.txt" />
+	</ItemGroup>
+
+	<!--This is mandatory to be able to add some metadata visible to compiler-->
+	<ItemGroup>
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GenerateIncludedResourceAccess" />
+		<CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="GenerateEmbeddedResourceAccess" />
+	</ItemGroup>
 	
 	<ItemGroup>
-		<Content Include="TestAsset\TestNoEmbedd.txt">
+		<Content Include="TestAsset\TestNoEmbedd.txt" GenerateIncludedResourceAccess="true" >
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-		<EmbeddedResource Include="RootTest.txt" />
-		<EmbeddedResource Include="TestAsset\Test2.txt" />
-		<EmbeddedResource Include="TestAsset\Test.txt" />
+		<AdditionalFiles Include="RootTest - incl.txt" GenerateIncludedResourceAccess="true" >
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</AdditionalFiles>
+		<EmbeddedResource Include="RootTest.txt" GenerateEmbeddedResourceAccess="true" />
+		<EmbeddedResource Include="TestAsset\Test2.txt" GenerateEmbeddedResourceAccess="true" />
+		<EmbeddedResource Include="TestAsset\Test.txt" GenerateEmbeddedResourceAccess="true" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Chorn.EmbeddedResourceAccessGenerator" Version="*-*">
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-			<PrivateAssets>all</PrivateAssets>
-		</PackageReference>
+	  <ProjectReference Include="..\ResourceAccessGenerator\ResourceAccessGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
+
+	<PropertyGroup>
+		<!-- Update the property to include all EmbeddedResource files -->
+		<AdditionalFileItemNames>$(AdditionalFileItemNames);EmbeddedResource</AdditionalFileItemNames>
+	</PropertyGroup>
 </Project>

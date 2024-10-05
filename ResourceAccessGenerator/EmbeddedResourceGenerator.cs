@@ -4,11 +4,11 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-public static class EmbeddedGenerator
+public static class EmbeddedResourceGenerator
 {
-	public static void GenerateCode(SourceProductionContext context, ResourceGenerationContext resourcesContext)
+	public static void GenerateCode(SourceProductionContext context, GenerationContext resourcesContext)
 	{
-		var embeddedResources = resourcesContext.With(ResourceKind.Embedded);
+		var embeddedResources = resourcesContext.With(ResourceKind.EmbeddedResource);
 
 		if (embeddedResources.IsEmpty)
 		{

@@ -50,7 +50,7 @@ public class ResourceAccessGenerator : IIncrementalGenerator
 
 					if (included)
 					{
-						return (file.Path, Kind: ResourceKind.Included);
+						return (file.Path, Kind: ResourceKind.AdditionalFile);
 					}
 
 					var embedded = options.TryGetValue("build_metadata.EmbeddedResource.GenerateEmbeddedResourceAccess",
@@ -59,7 +59,7 @@ public class ResourceAccessGenerator : IIncrementalGenerator
 
 					if (embedded)
 					{
-						return (file.Path, Kind: ResourceKind.Embedded);
+						return (file.Path, Kind: ResourceKind.EmbeddedResource);
 					}
 
 					return (file.Path, Kind: ResourceKind.Unspecified);
@@ -81,7 +81,7 @@ public class ResourceAccessGenerator : IIncrementalGenerator
 					: null);
 
 		// We combine the providers to generate the parameters for our source generation.
-		IncrementalValueProvider<ResourceGenerationContext> combined = additionaFilesProvider
+		IncrementalValueProvider<GenerationContext> combined = additionaFilesProvider
 				.Combine(rootNamespaceProvider.Combine(buildProjectDirProvider)).Select((c, _) =>
 					(c.Left, c.Right.Left, c.Right.Right))
 				.Select(ResourceAccessGenerator.MapToResourceGenerationContext);
@@ -89,10 +89,10 @@ public class ResourceAccessGenerator : IIncrementalGenerator
 		context.RegisterSourceOutput(combined, ResourceAccessGenerator.GenerateSourceIncremental);
 	}
 
-	private static ResourceGenerationContext MapToResourceGenerationContext((ImmutableArray<(string Path, ResourceKind Kind)>, string?, string? Right) tuple, CancellationToken cancellationToken)
+	private static GenerationContext MapToResourceGenerationContext((ImmutableArray<(string Path, ResourceKind Kind)>, string?, string? Right) tuple, CancellationToken cancellationToken)
 	{
 		var (pathAndKinds, rootNamespace, buildProjectDir) = tuple;
-		return new ResourceGenerationContext([
+		return new GenerationContext([
 			..pathAndKinds.Select(pathAndKind =>
 			{
 				string resourcePath = Utils.GetRelativePath(pathAndKind.Path, buildProjectDir).Replace("%20", " ");
@@ -103,7 +103,7 @@ public class ResourceAccessGenerator : IIncrementalGenerator
 		], rootNamespace);
 	}
 
-	private static void GenerateSourceIncremental(SourceProductionContext context, ResourceGenerationContext resourcesContext)
+	private static void GenerateSourceIncremental(SourceProductionContext context, GenerationContext resourcesContext)
 	{
 		try
 		{
@@ -118,15 +118,15 @@ public class ResourceAccessGenerator : IIncrementalGenerator
 	}
 
 
-	private static void GenerateSource(SourceProductionContext context, ResourceGenerationContext resourcesContext)
+	private static void GenerateSource(SourceProductionContext context, GenerationContext resourcesContext)
 	{
 		if (resourcesContext.IsEmpty)
 		{
 			return;
 		}
 
-		EmbeddedGenerator.GenerateCode(context, resourcesContext);
-		IncludedGenerator.GenerateCode(context, resourcesContext);
+		EmbeddedResourceGenerator.GenerateCode(context, resourcesContext);
+		AdditionalFileGenerator.GenerateCode(context, resourcesContext);
 	}
 
 
