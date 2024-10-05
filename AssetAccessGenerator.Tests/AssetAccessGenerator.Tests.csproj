@@ -30,7 +30,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<!--Pay attention - here the GenerateIncludedStaticAccess attribute is used (declared above) -->
+		<!--Pay attention - here the GenerateAdditionalFileAccess attribute is used (declared above) -->
 		<AdditionalFiles Include="TestIncludedAssets\**\*.*" GenerateAdditionalFileAccess="true">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</AdditionalFiles>
