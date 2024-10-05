@@ -120,10 +120,10 @@ public class EmbeddedResourceAccessGeneratorTests
 	[Fact]
 	public void InvalidCharsRootTxtIsAccessible()
 	{
-		using var reader = EmbeddedResource.TestAssets_2InvalidChars___txt.GetReader();
+		using var reader = EmbeddedResource._InvalidChars___txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
 
-		using var reader2 = EmbeddedResources.TestAssets___InvalidChars_Test_txt_Reader;
+		using var reader2 = EmbeddedResources._InvalidChars___txt_Reader;
 		Assert.Equal("Success", reader2.ReadToEnd());
 	}
 }

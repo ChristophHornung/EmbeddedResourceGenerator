@@ -7,6 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="2InvalidChars-%3b.txt" />
 	  <None Remove="TestAssets\$$InvalidChars\Test.txt" />
 	  <None Remove="TestAssets\Subfolder With Spaces\Test With Spaces.txt" />
 	  <None Remove="TestAssets\Test With Spaces.txt" />
@@ -37,6 +38,8 @@
 
 	<ItemGroup>
 		<EmbeddedResource Include="TestAssets\**\*.*" GenerateEmbeddedResourceAccess="true" />
+		<EmbeddedResource Include="2InvalidChars-%3b.txt" GenerateEmbeddedResourceAccess="true" />
+		<EmbeddedResource Include="Test.txt" GenerateEmbeddedResourceAccess="true" />
 	</ItemGroup>
 
 	<ItemGroup>
