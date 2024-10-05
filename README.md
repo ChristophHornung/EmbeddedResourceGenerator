@@ -3,7 +3,7 @@
 
 
 The AssetAccessGenerator is a code generator to allow easy access to all
-embedded and included resources.
+embedded and additional resources.
 
 ## Usage
 Get the nuget package [here](https://www.nuget.org/packages/Chorn.AssetAccessGenerator).
