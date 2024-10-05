@@ -3,34 +3,16 @@
 
 
 The AssetAccessGenerator is a code generator to allow easy access to all
-embedded reaources and additional files.
+embedded resources and content files.
 
 ## Usage
 Get the nuget package [here](https://www.nuget.org/packages/Chorn.AssetAccessGenerator).
 
-Add the GenerateEmbeddedResourceAcces attribute to the Embedded resource tag in your .csproj file:
-
-```xml
-<ItemGroup>
-  <EmbeddedResource Include="TestAsset\Test.txt" GenerateEmbeddedResourceAccess="true"/>
-</ItemGroup>
-```
-
-Or add the GenerateAdditionalFileAccess attribute to the AdditionalFiles tag in your .csproj file:
-
-```xml
-<ItemGroup>
-    <AdditionalFiles Include="TestIncludedAssets\**\*.*" GenerateAdditionalFileAccess="true">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </AdditionalFiles>
-</ItemGroup>
-```
-
 After referencing the `Chorn.AssetAccessGenerator` nuget the code generation will
-automatically create a class `EmbeddedResources` and/or `AdditionalFilesExtensions` in the root namespace of the project.
+automatically create a class `EmbeddedResources` and/or `ContentFilesExtensions` in the root namespace of the project.
 
-Together with the generated `EmbeddedResource` and `AdditionalFile` enumeration there are several options to access
-embedded resources:
+Together with the generated `EmbeddedResource` and `ContentFile` enumeration there are several options to access
+embedded resources and content files:
 
 E.g. for a `Test.txt` embedded resource in the `TestAsset` folder:
 
@@ -50,26 +32,26 @@ E.g. for a `Test.txt` embedded resource in the `TestAsset` folder:
 	using StreamReader sr = EmbeddedResourceTestAsset.Test_txt.GetReader();
 ```
 
-E.g. for a `Test.txt` additional file in the `TestAsset` folder:
+E.g. for a `Test.txt` content file in the `TestAsset` folder:
 
-- Via enum access through the `AdditionaFile` enum:
+- Via enum access through the `ContentFile` enum:
 
 ```csharp
 	// Via the generated extension methods on the enum
-	using Stream s = AdditionaFile.TestAsset_Test_txt.GetStream();
-	using StreamReader sr = AdditionaFile.TestAsset_Test_txt.GetReader();
-	var text = AdditionaFile.TestAsset_Test_txt.ReadAllText();
-	var textAsync = await AdditionaFile.TestAsset_Test_txt.ReadAllTextAsync();
+	using Stream s = ContentFile.TestAsset_Test_txt.GetStream();
+	using StreamReader sr = ContentFile.TestAsset_Test_txt.GetReader();
+	var text = ContentFile.TestAsset_Test_txt.ReadAllText();
+	var textAsync = await ContentFile.TestAsset_Test_txt.ReadAllTextAsync();
 ```
 
-- Via enum access through the `AdditionaFile[FolderName]` enum:
+- Via enum access through the `ContentFile[FolderName]` enum:
 
 ```csharp
 	// Via the generated extension methods on the enum
-	using Stream s = AdditionaFile_FolderName.Test_txt.GetStream();
-	using StreamReader sr = AdditionaFile_FolderName.Test_txt.GetReader();
-	var text = AdditionaFile_FolderName.Test_txt.ReadAllText();
-	var textAsync = await AdditionaFile_FolderName.Test_txt.ReadAllTextAsync();
+	using Stream s = ContentFile.Test_txt.GetStream();
+	using StreamReader sr = ContentFile.Test_txt.GetReader();
+	var text = ContentFile_FolderName.Test_txt.ReadAllText();
+	var textAsync = await ContentFile_FolderName.Test_txt.ReadAllTextAsync();
 ```
 
 ## Motivation

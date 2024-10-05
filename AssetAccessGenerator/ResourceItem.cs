@@ -40,7 +40,7 @@ public enum ResourceKind
 {
     Unspecified,
     EmbeddedResource,
-    AdditionalFile
+    Content
 }
 
 /// <summary>

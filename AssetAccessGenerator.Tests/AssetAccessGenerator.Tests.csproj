@@ -23,23 +23,35 @@
 	</ItemGroup>
 
 
-  <!--This is mandatory to be able to add some metadata visible to compiler-->
-	<ItemGroup>
-		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GenerateAdditionalFileAccess" />
+  <ItemGroup>
+		<CompilerVisibleItemMetadata Include="Content" MetadataName="GenerateContentAccess" />
 		<CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="GenerateEmbeddedResourceAccess" />
 	</ItemGroup>
+
+	<PropertyGroup>
+		<EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+		<EnableDefaultContentItems>false</EnableDefaultContentItems>
+	</PropertyGroup>
+
+  <ItemDefinitionGroup>
+		<Content>
+			<GenerateContentAccess>true</GenerateContentAccess>
+	  </Content>
+		<EmbeddedResource>
+			<GenerateEmbeddedResourceAccess>true</GenerateEmbeddedResourceAccess>
+		</EmbeddedResource>
+  </ItemDefinitionGroup>
 	
 	<ItemGroup>
-		<!--Pay attention - here the GenerateAdditionalFileAccess attribute is used (declared above) -->
-		<AdditionalFiles Include="TestIncludedAssets\**\*.*" GenerateAdditionalFileAccess="true">
+		<Content Include="TestIncludedAssets\**\*.*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</AdditionalFiles>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="TestAssets\**\*.*" GenerateEmbeddedResourceAccess="true" />
-		<EmbeddedResource Include="2InvalidChars-%3b.txt" GenerateEmbeddedResourceAccess="true" />
-		<EmbeddedResource Include="Test.txt" GenerateEmbeddedResourceAccess="true" />
+		<EmbeddedResource Include="TestAssets\**\*.*" />
+		<EmbeddedResource Include="2InvalidChars-%3b.txt" />
+		<EmbeddedResource Include="Test.txt" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -47,7 +59,7 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-		<!-- Update the property to include all EmbeddedResource files -->
-		<AdditionalFileItemNames>$(AdditionalFileItemNames);EmbeddedResource</AdditionalFileItemNames>
+		<!-- Update the property to include all EmbeddedResource and Content files -->
+		<AdditionalFileItemNames>$(AdditionalFileItemNames);EmbeddedResource;Content</AdditionalFileItemNames>
 	</PropertyGroup>
 </Project>

@@ -4,13 +4,13 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-public static class AdditionalFileGenerator
+public static class ContentFileAccessGenerator
 {
 	public static void GenerateCode(SourceProductionContext context, GenerationContext generationContext)
 	{
-		var additionalFilesContext = generationContext.With(ResourceKind.AdditionalFile);
+		var contentFiles = generationContext.With(ResourceKind.Content);
 
-		if (additionalFilesContext.IsEmpty)
+		if (contentFiles.IsEmpty)
 		{
 			return;
 		}
@@ -18,24 +18,24 @@ public static class AdditionalFileGenerator
 		StringBuilder sourceBuilder = new();
 		sourceBuilder.AppendLine($$"""
 		                           #nullable enable
-		                           namespace {{additionalFilesContext.RootNamespace}};
+		                           namespace {{contentFiles.RootNamespace}};
 		                           using System;
 		                           using System.IO;
 
 		                           /// <summary>
-		                           /// Auto-generated class to access all additional files in an assembly.
+		                           /// Auto-generated class to access all content files in an assembly.
 		                           /// </summary>
-		                           public static partial class AdditionalFilesExtensions
+		                           public static partial class ContentFilesExtensions
 		                           {
 		                           """);
 
-		//foreach ((string path, string identifierName, string resourceName) in additionalFiles)
+		//foreach ((string path, string identifierName, string resourceName) in contentFiles)
 		//{
 		//	sourceBuilder.AppendLine($$"""
 		//	                           	/// <summary>
-		//	                           	/// Gets the additional file '{{resourceName}}' as a stream.
+		//	                           	/// Gets the content file '{{resourceName}}' as a stream.
 		//	                           	/// </summary>
-		//	                           	/// <returns>The stream to access the additional file.</returns>
+		//	                           	/// <returns>The stream to access the content file.</returns>
 		//	                           	public static Stream {{identifierName}}_Stream
 		//	                           	{
 		//	                           		get {
@@ -44,9 +44,9 @@ public static class AdditionalFileGenerator
 		//	                           	}
 
 		//	                           	/// <summary>
-		//	                           	/// Gets the additional file '{{resourceName}}' as a stream-reader.
+		//	                           	/// Gets the content file '{{resourceName}}' as a stream-reader.
 		//	                           	/// </summary>
-		//	                           	/// <returns>The stream-reader to access the additional file.</returns>
+		//	                           	/// <returns>The stream-reader to access the content file.</returns>
 		//	                           	public static StreamReader {{identifierName}}_Reader
 		//	                           	{
 		//	                           		get 
@@ -60,64 +60,64 @@ public static class AdditionalFileGenerator
 
 		sourceBuilder.AppendLine($$$$"""
 		                           	/// <summary>
-		                           	/// Gets the additional file's stream.
+		                           	/// Gets the content file's stream.
 		                           	/// </summary>
-		                           	/// <param name="file">The additional file to retrieve the stream for.</param>
-		                           	/// <returns>The stream to access the additional file.</returns>
-		                           	public static Stream GetStream(this AdditionalFile file)
+		                           	/// <param name="file">The content file to retrieve the stream for.</param>
+		                           	/// <returns>The stream to access the content file.</returns>
+		                           	public static Stream GetStream(this ContentFile file)
 		                           	{
-		                           		return File.OpenRead(GetAdditionalFilePath(file))!;
+		                           		return File.OpenRead(GetContentFilePath(file))!;
 		                           	}
 		                           
 		                           	/// <summary>
-		                           	/// Gets the additional file's stream-reader.
+		                           	/// Gets the content file's stream-reader.
 		                           	/// </summary>
-		                           	/// <param name="file">The additional file to retrieve the stream-reader for.</param>
-		                           	/// <returns>The stream-reader to access the additional file.</returns>
-		                           	public static StreamReader GetReader(this AdditionalFile file)
+		                           	/// <param name="file">The content file to retrieve the stream-reader for.</param>
+		                           	/// <returns>The stream-reader to access the content file.</returns>
+		                           	public static StreamReader GetReader(this ContentFile file)
 		                           	{
-		                           		return new StreamReader(File.OpenRead(GetAdditionalFilePath(file))!, leaveOpen:false);
+		                           		return new StreamReader(File.OpenRead(GetContentFilePath(file))!, leaveOpen:false);
 		                           	}
 		                           	
 		                           	/// <summary>
-		                           	/// Reads the additional file's text asynchronously.
+		                           	/// Reads the content file's text asynchronously.
 		                           	/// </summary>
-		                           	/// <param name="file">The additional file to read all text.</param>
+		                           	/// <param name="file">The content file to read all text.</param>
 		                           	/// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
 		                           	/// <returns>text.</returns>
-		                           	public static async Task<string> ReadAllTextAsync(this AdditionalFile file, CancellationToken cancellationToken = default(CancellationToken))
+		                           	public static async Task<string> ReadAllTextAsync(this ContentFile file, CancellationToken cancellationToken = default(CancellationToken))
 		                           	{
-		                           	    return await File.ReadAllTextAsync(GetAdditionalFilePath(file), cancellationToken)!;
+		                           	    return await File.ReadAllTextAsync(GetContentFilePath(file), cancellationToken)!;
 		                           	}
 		                           	
 		                           	/// <summary>
-		                           	/// Reads the additional file's text.
+		                           	/// Reads the content file's text.
 		                           	/// </summary>
-		                           	/// <param name="resource">The additional file to read all text.</param>
+		                           	/// <param name="file">The content file to read all text.</param>
 		                           	/// <returns>text.</returns>
-		                           	public static string ReadAllText(this AdditionalFile file)
+		                           	public static string ReadAllText(this ContentFile file)
 		                           	{
-		                           	    return File.ReadAllText(GetAdditionalFilePath(file))!;
+		                           	    return File.ReadAllText(GetContentFilePath(file))!;
 		                           	}
 		                           	
 		                           """);
 
 		sourceBuilder.AppendLine("""
 		                         	/// <summary>
-		                         	/// Gets the additional file's path.
+		                         	/// Gets the content file's path.
 		                         	/// </summary>
-		                         	/// <param name="file">The additional file to retrieve the name for.</param>
-		                         	/// <returns>The path to access the additional file.</returns>
-		                         	public static string GetAdditionalFilePath(this AdditionalFile file)
+		                         	/// <param name="file">The content file to retrieve the name for.</param>
+		                         	/// <returns>The path to access the content file.</returns>
+		                         	public static string GetContentFilePath(this ContentFile file)
 		                         	{
 		                         		return file switch 
 		                         		{
 		                         """);
 
-		foreach ((string path, string identifierName, string _, _) in additionalFilesContext)
+		foreach ((string path, string identifierName, string _, _) in contentFiles)
 		{
 			sourceBuilder.AppendLine($$"""
-			                           			AdditionalFile.{{identifierName}} => @"{{path}}",
+			                           			ContentFile.{{identifierName}} => @"{{path}}",
 			                           """);
 		}
 
@@ -127,7 +127,7 @@ public static class AdditionalFileGenerator
 
 		sourceBuilder.AppendLine("\t}");
 
-		foreach (IGrouping<string, ResourceItem> pathGrouped in additionalFilesContext.GroupBy(g =>
+		foreach (IGrouping<string, ResourceItem> pathGrouped in contentFiles.GroupBy(g =>
 					 Path.GetDirectoryName(g.RelativePath)))
 		{
 			string pathAsClassName = Utils.PathAsClassname(pathGrouped.Key, "_");
@@ -136,44 +136,44 @@ public static class AdditionalFileGenerator
 				sourceBuilder.AppendLine($$$"""
 				                           
 				                           	/// <summary>
-				                           	/// Gets the additional file's stream.
+				                           	/// Gets the content file's stream.
 				                           	/// </summary>
-				                           	/// <param name="file">The additional file to retrieve the stream for.</param>
-				                           	/// <returns>The stream to access the additional file.</returns>
-				                           	public static Stream GetStream(this AdditionalFile_{{{pathAsClassName}}} file)
+				                           	/// <param name="file">The content file to retrieve the stream for.</param>
+				                           	/// <returns>The stream to access the content file.</returns>
+				                           	public static Stream GetStream(this ContentFile_{{{pathAsClassName}}} file)
 				                           	{
-				                           		return File.OpenRead(GetAdditionalFilePath(file))!;
+				                           		return File.OpenRead(GetContentFilePath(file))!;
 				                           	}
 				                           
 				                           	/// <summary>
-				                           	/// Gets the additional file's stream-reader.
+				                           	/// Gets the content file's stream-reader.
 				                           	/// </summary>
-				                           	/// <param name="file">The additional file to retrieve the stream-reader for.</param>
-				                           	/// <returns>The stream-reader to access the additional file.</returns>
-				                           	public static StreamReader GetReader(this AdditionalFile_{{{pathAsClassName}}} file)
+				                           	/// <param name="file">The content file to retrieve the stream-reader for.</param>
+				                           	/// <returns>The stream-reader to access the content file.</returns>
+				                           	public static StreamReader GetReader(this ContentFile_{{{pathAsClassName}}} file)
 				                           	{
-				                           		return new StreamReader(File.OpenRead(GetAdditionalFilePath(file))!, leaveOpen:false);
+				                           		return new StreamReader(File.OpenRead(GetContentFilePath(file))!, leaveOpen:false);
 				                           	}
 				                           	
 				                           	/// <summary>
-				                            /// Reads the additional file's text asynchronously.
+				                            /// Reads the content file's text asynchronously.
 				                            /// </summary>
-				                            /// <param name="file">The additional file to read all text.</param>
+				                            /// <param name="file">The content file to read all text.</param>
 				                            /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
 				                            /// <returns>text.</returns>
-				                           	public static async Task<string> ReadAllTextAsync(this AdditionalFile_{{{pathAsClassName}}} file, CancellationToken cancellationToken = default(CancellationToken))
+				                           	public static async Task<string> ReadAllTextAsync(this ContentFile_{{{pathAsClassName}}} file, CancellationToken cancellationToken = default(CancellationToken))
 				                           	{
-				                           		return await File.ReadAllTextAsync(GetAdditionalFilePath(file), cancellationToken)!;
+				                           		return await File.ReadAllTextAsync(GetContentFilePath(file), cancellationToken)!;
 				                           	}
 				                           	
 				                           	/// <summary>
-				                           	/// Reads the additional file's text.
+				                           	/// Reads the content file's text.
 				                           	/// </summary>
-				                           	/// <param name="file">The additional file to read all text.</param>
+				                           	/// <param name="file">The content file to read all text.</param>
 				                           	/// <returns>text.</returns>
-				                           	public static string ReadAllText(this AdditionalFile_{{{pathAsClassName}}} file)
+				                           	public static string ReadAllText(this ContentFile_{{{pathAsClassName}}} file)
 				                           	{
-				                           		return File.ReadAllText(GetAdditionalFilePath(file))!;
+				                           		return File.ReadAllText(GetContentFilePath(file))!;
 				                           	}
 				                           	
 				                           """);
@@ -181,11 +181,11 @@ public static class AdditionalFileGenerator
 				sourceBuilder.AppendLine($$"""
 				                           
 				                           	/// <summary>
-				                           	/// Gets the additional file's name in the format required by <c>GetManifestResourceStream</c>.
+				                           	/// Gets the content file's path.
 				                           	/// </summary>
-				                           	/// <param name="file">The additional file to retrieve the name for.</param>
-				                           	/// <returns>The name to access the additional file.</returns>
-				                           	public static string GetAdditionalFilePath(this AdditionalFile_{{pathAsClassName}} file)
+				                           	/// <param name="file">The content file to retrieve the name for.</param>
+				                           	/// <returns>The name to access the content file.</returns>
+				                           	public static string GetContentFilePath(this ContentFile_{{pathAsClassName}} file)
 				                           	{
 				                           		return file switch 
 				                           		{
@@ -196,7 +196,7 @@ public static class AdditionalFileGenerator
 					string nonPathedIdentifierName = Utils.GetValidIdentifierName(Path.GetFileName(relativePath));
 
 					sourceBuilder.AppendLine($$"""
-					                           			AdditionalFile_{{pathAsClassName}}.{{nonPathedIdentifierName}} => @"{{relativePath}}",
+					                           			ContentFile_{{pathAsClassName}}.{{nonPathedIdentifierName}} => @"{{relativePath}}",
 					                           """);
 				}
 
@@ -213,17 +213,17 @@ public static class AdditionalFileGenerator
 		sourceBuilder.AppendLine("""
 
 		                         /// <summary>
-		                         /// Auto-generated enumeration for all additional files in the assembly.
+		                         /// Auto-generated enumeration for all content files in the assembly.
 		                         /// </summary>
-		                         public enum AdditionalFile
+		                         public enum ContentFile
 		                         {
 		                         """);
 
-		foreach ((string _, string identifierName, string resourceName, _) in additionalFilesContext)
+		foreach ((string _, string identifierName, string resourceName, _) in contentFiles)
 		{
 			sourceBuilder.AppendLine($$"""
 			                           	/// <summary>
-			                           	/// Represents the additional file '{{resourceName}}'.
+			                           	/// Represents the content file '{{resourceName}}'.
 			                           	/// </summary>
 			                           	{{identifierName}},
 			                           """);
@@ -231,7 +231,7 @@ public static class AdditionalFileGenerator
 
 		sourceBuilder.AppendLine("}");
 
-		foreach (IGrouping<string, ResourceItem> pathGrouped in additionalFilesContext.GroupBy(g =>
+		foreach (IGrouping<string, ResourceItem> pathGrouped in contentFiles.GroupBy(g =>
 					 Path.GetDirectoryName(g.RelativePath)))
 		{
 			string pathAsClassName = Utils.PathAsClassname(pathGrouped.Key, "_");
@@ -240,9 +240,9 @@ public static class AdditionalFileGenerator
 				sourceBuilder.AppendLine($$"""
 
 				                           /// <summary>
-				                           /// Auto-generated enumeration for all additional files in '{{pathGrouped.Key}}'.
+				                           /// Auto-generated enumeration for all content files in '{{pathGrouped.Key}}'.
 				                           /// </summary>
-				                           public enum AdditionalFile_{{pathAsClassName}}
+				                           public enum ContentFile_{{pathAsClassName}}
 				                           {
 				                           """);
 
@@ -252,7 +252,7 @@ public static class AdditionalFileGenerator
 
 					sourceBuilder.AppendLine($$"""
 					                           	/// <summary>
-					                           	/// Represents the additional file '{{Path.GetFileName(item.RelativePath)}}' in {{pathGrouped.Key}}.
+					                           	/// Represents the content file '{{Path.GetFileName(item.RelativePath)}}' in {{pathGrouped.Key}}.
 					                           	/// </summary>
 					                           	{{nonPathedIdentifierName}},
 					                           """);
@@ -265,6 +265,6 @@ public static class AdditionalFileGenerator
 		sourceBuilder.Append("#nullable restore");
 
 		SourceText source = SourceText.From(sourceBuilder.ToString(), Encoding.UTF8);
-		context.AddSource("AdditionalFiles.generated.cs", source);
+		context.AddSource("ContentFiles.generated.cs", source);
 	}
 }

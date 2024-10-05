@@ -6,25 +6,38 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Remove="RootTest - incl.txt" />
+	  <None Remove="RootTest - content.txt" />
 	</ItemGroup>
 
-	<!--This is mandatory to be able to add some metadata visible to compiler-->
 	<ItemGroup>
-		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GenerateAdditionalFileAccess" />
+		<CompilerVisibleItemMetadata Include="Content" MetadataName="GenerateContentAccess" />
 		<CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="GenerateEmbeddedResourceAccess" />
 	</ItemGroup>
+
+	<PropertyGroup>
+		<EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+		<EnableDefaultContentItems>false</EnableDefaultContentItems>
+	</PropertyGroup>
+
+	<ItemDefinitionGroup>
+		<Content>
+			<GenerateContentAccess>true</GenerateContentAccess>
+		</Content>
+		<EmbeddedResource>
+			<GenerateEmbeddedResourceAccess>true</GenerateEmbeddedResourceAccess>
+		</EmbeddedResource>
+	</ItemDefinitionGroup>
 	
 	<ItemGroup>
-		<Content Include="TestAsset\TestNoEmbedd.txt" GenerateAdditionalFileAccess="true" >
+		<Content Include="TestAsset\TestNoEmbedd.txt">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-		<AdditionalFiles Include="RootTest - incl.txt" GenerateAdditionalFileAccess="true" >
+		<Content Include="RootTest - content.txt">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</AdditionalFiles>
-		<EmbeddedResource Include="RootTest.txt" GenerateEmbeddedResourceAccess="true" />
-		<EmbeddedResource Include="TestAsset\Test2.txt" GenerateEmbeddedResourceAccess="true" />
-		<EmbeddedResource Include="TestAsset\Test.txt" GenerateEmbeddedResourceAccess="true" />
+		</Content>
+		<EmbeddedResource Include="RootTest.txt" />
+		<EmbeddedResource Include="TestAsset\Test2.txt" />
+		<EmbeddedResource Include="TestAsset\Test.txt" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -33,6 +46,6 @@
 
 	<PropertyGroup>
 		<!-- Update the property to include all EmbeddedResource files -->
-		<AdditionalFileItemNames>$(AdditionalFileItemNames);EmbeddedResource</AdditionalFileItemNames>
+		<AdditionalFileItemNames>$(AdditionalFileItemNames);EmbeddedResource;Content</AdditionalFileItemNames>
 	</PropertyGroup>
 </Project>

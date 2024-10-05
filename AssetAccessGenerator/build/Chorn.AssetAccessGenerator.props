@@ -1,11 +1,23 @@
 ﻿<Project>
 	<PropertyGroup>
-		<!-- Include all EmbeddedResource files as additional file names.-->
-		<AdditionalFileItemNames>$(AdditionalFileItemNames);EmbeddedResource</AdditionalFileItemNames>
+		<EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+		<EnableDefaultContentItems>false</EnableDefaultContentItems>
 	</PropertyGroup>
+	<ItemDefinitionGroup>
+		<AdditionalFiles>
+			<GenerateContentAccess>true</GenerateContentAccess>
+		</AdditionalFiles>
+		<EmbeddedResource>
+			<GenerateEmbeddedResourceAccess>true</GenerateEmbeddedResourceAccess>
+		</EmbeddedResource>
+	</ItemDefinitionGroup>
 	<!--This is mandatory to be able to add some metadata visible to compiler-->
 	<ItemGroup>
-		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GenerateAdditionalFileAccess" />
+		<CompilerVisibleItemMetadata Include="Content" MetadataName="GenerateContentAccess" />
 		<CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="GenerateEmbeddedResourceAccess" />
 	</ItemGroup>
+	<PropertyGroup>
+		<!-- Update the property to include all EmbeddedResource and Content files -->
+		<AdditionalFileItemNames>$(AdditionalFileItemNames);EmbeddedResource;Content</AdditionalFileItemNames>
+	</PropertyGroup>
 </Project>

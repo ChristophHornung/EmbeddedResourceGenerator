@@ -44,18 +44,18 @@ public class AssetAccessGenerator : IIncrementalGenerator
 					// Get the options for the current file
 					var options = optionsProvider.GetOptions(file);
 
-					var included = options.TryGetValue("build_metadata.AdditionalFiles.GenerateAdditionalFileAccess",
-									   out var generateIncludedStaticAccess)
-								   && generateIncludedStaticAccess == "true";
+					var content = options.TryGetValue("build_metadata.Content.GenerateContentAccess",
+									   out var generateContentAccess)
+								   && generateContentAccess == "true";
 
-					if (included)
+					if (content)
 					{
-						return (file.Path, Kind: ResourceKind.AdditionalFile);
+						return (file.Path, Kind: ResourceKind.Content);
 					}
 
 					var embedded = options.TryGetValue("build_metadata.EmbeddedResource.GenerateEmbeddedResourceAccess",
-									   out var generateEmbeddedStaticAccess)
-								   && generateEmbeddedStaticAccess == "true";
+									   out var generateEmbeddedResourceAccess)
+								   && generateEmbeddedResourceAccess == "true";
 
 					if (embedded)
 					{
@@ -125,8 +125,8 @@ public class AssetAccessGenerator : IIncrementalGenerator
 			return;
 		}
 
-		EmbeddedResourceGenerator.GenerateCode(context, generationContext);
-		AdditionalFileGenerator.GenerateCode(context, generationContext);
+		EmbeddedResourceAccessGenerator.GenerateCode(context, generationContext);
+		ContentFileAccessGenerator.GenerateCode(context, generationContext);
 	}
 
 	private void Log(SourceProductionContext context, string log)

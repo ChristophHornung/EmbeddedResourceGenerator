@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-public static class EmbeddedResourceGenerator
+public static class EmbeddedResourceAccessGenerator
 {
 	public static void GenerateCode(SourceProductionContext context, GenerationContext generationContext)
 	{
