@@ -51,6 +51,9 @@ public class AssetAccessGenerator : IIncrementalGenerator
 					if (content)
 					{
 						return (file.Path, Kind: ResourceKind.Content);
+						//return !file.Path.EndsWith("testhost.exe") && !file.Path.EndsWith("testhost.dll") 
+						//	? (file.Path, Kind: ResourceKind.Content)
+						//	: (file.Path, Kind: ResourceKind.Unspecified);
 					}
 
 					var embedded = options.TryGetValue("build_metadata.EmbeddedResource.GenerateEmbeddedResourceAccess",
@@ -98,7 +101,9 @@ public class AssetAccessGenerator : IIncrementalGenerator
 				string resourcePath = Utils.GetRelativePath(pathAndKind.Path, buildProjectDir).Replace("%20", " ");
 				string resourceName = Utils.GetResourceName(resourcePath);
 				string identifierName = Utils.GetValidIdentifierName(resourcePath);
-				return new ResourceItem(resourcePath, identifierName, resourceName, pathAndKind.Kind);
+				// trick to skip testhost.exe and testhost.dll and other files that are external to the solution
+				var kind = pathAndKind.Path.IsSubPathOf(buildProjectDir) ? pathAndKind.Kind : ResourceKind.Unspecified;
+				return new ResourceItem(resourcePath, identifierName, resourceName, kind);
 			})
 		], rootNamespace);
 	}

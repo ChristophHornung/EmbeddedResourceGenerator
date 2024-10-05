@@ -43,7 +43,7 @@
   </ItemDefinitionGroup>
 	
 	<ItemGroup>
-		<Content Include="TestIncludedAssets\**\*.*">
+		<Content Include="TestContentAssets\**\*.*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
