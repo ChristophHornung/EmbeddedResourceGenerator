@@ -27,4 +27,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: nuget-package
-        path: ${{ github.workspace }}/ResourceAccessGenerator/bin/Release/*.nupkg
+        path: ${{ github.workspace }}/AssetAccessGenerator/bin/Release/*.nupkg
