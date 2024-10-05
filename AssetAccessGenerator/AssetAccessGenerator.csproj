@@ -9,7 +9,7 @@
 		<PackageId>Chorn.AssetAccessGenerator</PackageId>
 		<Version>1.0.0</Version>
 		<Copyright>Christoph Hornung, Yevhen Cherkes</Copyright>
-		<Description>Generates strongly typed access methods for embedded resources and additional files.</Description>
+		<Description>Generates strongly typed access methods for embedded resources and content files.</Description>
 		<PackageProjectUrl>https://github.com/ChristophHornung/AssetAccessGenerator</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/ChristophHornung/AssetAccessGenerator</RepositoryUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -20,7 +20,7 @@
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<DevelopmentDependency>true</DevelopmentDependency>
-		<PackageTags>embeddedresource;additionalfile;manifestresource;code-generator;source-generator;csharp</PackageTags>
+		<PackageTags>embeddedresource;content;manifestresource;code-generator;source-generator;csharp</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>

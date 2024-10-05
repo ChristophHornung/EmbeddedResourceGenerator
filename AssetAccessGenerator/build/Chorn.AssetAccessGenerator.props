@@ -4,9 +4,9 @@
 		<EnableDefaultContentItems>false</EnableDefaultContentItems>
 	</PropertyGroup>
 	<ItemDefinitionGroup>
-		<AdditionalFiles>
+		<Content>
 			<GenerateContentAccess>true</GenerateContentAccess>
-		</AdditionalFiles>
+		</Content>
 		<EmbeddedResource>
 			<GenerateEmbeddedResourceAccess>true</GenerateEmbeddedResourceAccess>
 		</EmbeddedResource>
