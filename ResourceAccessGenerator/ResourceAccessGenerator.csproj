@@ -20,7 +20,7 @@
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<DevelopmentDependency>true</DevelopmentDependency>
-		<PackageTags>embeddedresource;includedresource;manifestresource;code-generator;source-generator;csharp</PackageTags>
+		<PackageTags>embeddedresource;additionalfile;manifestresource;code-generator;source-generator;csharp</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>

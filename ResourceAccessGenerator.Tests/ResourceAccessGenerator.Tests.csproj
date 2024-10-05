@@ -24,13 +24,13 @@
 
   <!--This is mandatory to be able to add some metadata visible to compiler-->
 	<ItemGroup>
-		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GenerateIncludedResourceAccess" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GenerateAdditionalFileAccess" />
 		<CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="GenerateEmbeddedResourceAccess" />
 	</ItemGroup>
 	
 	<ItemGroup>
 		<!--Pay attention - here the GenerateIncludedStaticAccess attribute is used (declared above) -->
-		<AdditionalFiles Include="TestIncludedAssets\**\*.*" GenerateIncludedResourceAccess="true">
+		<AdditionalFiles Include="TestIncludedAssets\**\*.*" GenerateAdditionalFileAccess="true">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</AdditionalFiles>
 	</ItemGroup>

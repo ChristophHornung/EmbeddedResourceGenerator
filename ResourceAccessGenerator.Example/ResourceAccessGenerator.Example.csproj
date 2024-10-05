@@ -11,15 +11,15 @@
 
 	<!--This is mandatory to be able to add some metadata visible to compiler-->
 	<ItemGroup>
-		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GenerateIncludedResourceAccess" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GenerateAdditionalFileAccess" />
 		<CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="GenerateEmbeddedResourceAccess" />
 	</ItemGroup>
 	
 	<ItemGroup>
-		<Content Include="TestAsset\TestNoEmbedd.txt" GenerateIncludedResourceAccess="true" >
+		<Content Include="TestAsset\TestNoEmbedd.txt" GenerateAdditionalFileAccess="true" >
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
-		<AdditionalFiles Include="RootTest - incl.txt" GenerateIncludedResourceAccess="true" >
+		<AdditionalFiles Include="RootTest - incl.txt" GenerateAdditionalFileAccess="true" >
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</AdditionalFiles>
 		<EmbeddedResource Include="RootTest.txt" GenerateEmbeddedResourceAccess="true" />

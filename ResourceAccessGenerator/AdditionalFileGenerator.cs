@@ -25,11 +25,11 @@ public static class AdditionalFileGenerator
 		                           /// <summary>
 		                           /// Auto-generated class to access all additional files in an assembly.
 		                           /// </summary>
-		                           public static partial class IncludedResourcesExtensions
+		                           public static partial class AdditionalFilesExtensions
 		                           {
 		                           """);
 
-		//foreach ((string path, string identifierName, string resourceName) in includedResources)
+		//foreach ((string path, string identifierName, string resourceName) in additionalFiles)
 		//{
 		//	sourceBuilder.AppendLine($$"""
 		//	                           	/// <summary>
@@ -64,7 +64,7 @@ public static class AdditionalFileGenerator
 		                           	/// </summary>
 		                           	/// <param name="resource">The additional file to retrieve the stream for.</param>
 		                           	/// <returns>The stream to access the additional file.</returns>
-		                           	public static Stream GetStream(this IncludedResource resource)
+		                           	public static Stream GetStream(this AdditionalFile resource)
 		                           	{
 		                           		return File.OpenRead(GetResourcePath(resource))!;
 		                           	}
@@ -74,7 +74,7 @@ public static class AdditionalFileGenerator
 		                           	/// </summary>
 		                           	/// <param name="resource">The additional file to retrieve the stream-reader for.</param>
 		                           	/// <returns>The stream-reader to access the additional file.</returns>
-		                           	public static StreamReader GetReader(this IncludedResource resource)
+		                           	public static StreamReader GetReader(this AdditionalFile resource)
 		                           	{
 		                           		return new StreamReader(File.OpenRead(GetResourcePath(resource))!, leaveOpen:false);
 		                           	}
@@ -84,7 +84,7 @@ public static class AdditionalFileGenerator
 		                           	/// </summary>
 		                           	/// <param name="resource">The additional file to retrieve the stream-reader for.</param>
 		                           	/// <returns>text.</returns>
-		                           	public static async Task<string> ReadAllTextAsync(this IncludedResource resource)
+		                           	public static async Task<string> ReadAllTextAsync(this AdditionalFile resource)
 		                           	{
 		                           	    return await File.ReadAllTextAsync(GetResourcePath(resource))!;
 		                           	}
@@ -94,7 +94,7 @@ public static class AdditionalFileGenerator
 		                           	/// </summary>
 		                           	/// <param name="resource">The additional file to retrieve the stream-reader for.</param>
 		                           	/// <returns>text.</returns>
-		                           	public static string ReadAllText(this IncludedResource resource)
+		                           	public static string ReadAllText(this AdditionalFile resource)
 		                           	{
 		                           	    return File.ReadAllText(GetResourcePath(resource))!;
 		                           	}
@@ -107,7 +107,7 @@ public static class AdditionalFileGenerator
 		                         	/// </summary>
 		                         	/// <param name="resource">The additional file to retrieve the name for.</param>
 		                         	/// <returns>The path to access the additional file.</returns>
-		                         	public static string GetResourcePath(this IncludedResource resource)
+		                         	public static string GetResourcePath(this AdditionalFile resource)
 		                         	{
 		                         		return resource switch 
 		                         		{
@@ -116,7 +116,7 @@ public static class AdditionalFileGenerator
 		foreach ((string path, string identifierName, string _, _) in additionalFilesContext)
 		{
 			sourceBuilder.AppendLine($$"""
-			                           			IncludedResource.{{identifierName}} => @"{{path}}",
+			                           			AdditionalFile.{{identifierName}} => @"{{path}}",
 			                           """);
 		}
 
@@ -139,7 +139,7 @@ public static class AdditionalFileGenerator
 				                           	/// </summary>
 				                           	/// <param name="resource">The additional file to retrieve the stream for.</param>
 				                           	/// <returns>The stream to access the additional file.</returns>
-				                           	public static Stream GetStream(this IncludedResource_{{{pathAsClassName}}} resource)
+				                           	public static Stream GetStream(this AdditionalFile_{{{pathAsClassName}}} resource)
 				                           	{
 				                           		return File.OpenRead(GetResourcePath(resource))!;
 				                           	}
@@ -149,7 +149,7 @@ public static class AdditionalFileGenerator
 				                           	/// </summary>
 				                           	/// <param name="resource">The additional file to retrieve the stream-reader for.</param>
 				                           	/// <returns>The stream-reader to access the additional file.</returns>
-				                           	public static StreamReader GetReader(this IncludedResource_{{{pathAsClassName}}} resource)
+				                           	public static StreamReader GetReader(this AdditionalFile_{{{pathAsClassName}}} resource)
 				                           	{
 				                           		return new StreamReader(File.OpenRead(GetResourcePath(resource))!, leaveOpen:false);
 				                           	}
@@ -159,7 +159,7 @@ public static class AdditionalFileGenerator
 				                           	/// </summary>
 				                           	/// <param name="resource">The additional file to retrieve the stream-reader for.</param>
 				                           	/// <returns>text.</returns>
-				                           	public static async Task<string> ReadAllTextAsync(this IncludedResource_{{{pathAsClassName}}} resource)
+				                           	public static async Task<string> ReadAllTextAsync(this AdditionalFile_{{{pathAsClassName}}} resource)
 				                           	{
 				                           		return await File.ReadAllTextAsync(GetResourcePath(resource))!;
 				                           	}
@@ -169,7 +169,7 @@ public static class AdditionalFileGenerator
 				                           	/// </summary>
 				                           	/// <param name="resource">The additional file to retrieve the stream-reader for.</param>
 				                           	/// <returns>text.</returns>
-				                           	public static string ReadAllText(this IncludedResource_{{{pathAsClassName}}} resource)
+				                           	public static string ReadAllText(this AdditionalFile_{{{pathAsClassName}}} resource)
 				                           	{
 				                           		return File.ReadAllText(GetResourcePath(resource))!;
 				                           	}
@@ -183,7 +183,7 @@ public static class AdditionalFileGenerator
 				                           	/// </summary>
 				                           	/// <param name="resource">The additional file to retrieve the name for.</param>
 				                           	/// <returns>The name to access the additional file.</returns>
-				                           	public static string GetResourcePath(this IncludedResource_{{pathAsClassName}} resource)
+				                           	public static string GetResourcePath(this AdditionalFile_{{pathAsClassName}} resource)
 				                           	{
 				                           		return resource switch 
 				                           		{
@@ -194,7 +194,7 @@ public static class AdditionalFileGenerator
 					string nonPathedIdentifierName = Utils.GetValidIdentifierName(Path.GetFileName(relativePath));
 
 					sourceBuilder.AppendLine($$"""
-					                           			IncludedResource_{{pathAsClassName}}.{{nonPathedIdentifierName}} => @"{{relativePath}}",
+					                           			AdditionalFile_{{pathAsClassName}}.{{nonPathedIdentifierName}} => @"{{relativePath}}",
 					                           """);
 				}
 
@@ -213,7 +213,7 @@ public static class AdditionalFileGenerator
 		                         /// <summary>
 		                         /// Auto-generated enumeration for all additional files in the assembly.
 		                         /// </summary>
-		                         public enum IncludedResource
+		                         public enum AdditionalFile
 		                         {
 		                         """);
 
@@ -240,7 +240,7 @@ public static class AdditionalFileGenerator
 				                           /// <summary>
 				                           /// Auto-generated enumeration for all additional files in '{{pathGrouped.Key}}'.
 				                           /// </summary>
-				                           public enum IncludedResource_{{pathAsClassName}}
+				                           public enum AdditionalFile_{{pathAsClassName}}
 				                           {
 				                           """);
 
@@ -263,6 +263,6 @@ public static class AdditionalFileGenerator
 		sourceBuilder.Append("#nullable restore");
 
 		SourceText source = SourceText.From(sourceBuilder.ToString(), Encoding.UTF8);
-		context.AddSource("IncludedResources.generated.cs", source);
+		context.AddSource("AdditionalFiles.generated.cs", source);
 	}
 }

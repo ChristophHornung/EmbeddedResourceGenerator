@@ -44,7 +44,7 @@ public class ResourceAccessGenerator : IIncrementalGenerator
 					// Get the options for the current file
 					var options = optionsProvider.GetOptions(file);
 
-					var included = options.TryGetValue("build_metadata.AdditionalFiles.GenerateIncludedResourceAccess",
+					var included = options.TryGetValue("build_metadata.AdditionalFiles.GenerateAdditionalFileAccess",
 									   out var generateIncludedStaticAccess)
 								   && generateIncludedStaticAccess == "true";
 
