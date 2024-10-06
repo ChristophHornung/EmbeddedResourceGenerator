@@ -1,12 +1,11 @@
 ﻿<Project>
-	<PropertyGroup>
-		<EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
-	</PropertyGroup>
-	<ItemDefinitionGroup>
-		<EmbeddedResource>
-			<GenerateEmbeddedResourceAccess>true</GenerateEmbeddedResourceAccess>
-		</EmbeddedResource>
-	</ItemDefinitionGroup>
+	<Target Name="AddGenerateEmbeddedResourceAccessToEmbeddedResources" BeforeTargets="BeforeCompile">
+		<ItemGroup>
+			<EmbeddedResource Update="@(EmbeddedResource)">
+				<GenerateEmbeddedResourceAccess>true</GenerateEmbeddedResourceAccess>
+			</EmbeddedResource>
+		</ItemGroup>
+	</Target>
 	<ItemGroup>
 		<CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="GenerateEmbeddedResourceAccess" />
 	</ItemGroup>

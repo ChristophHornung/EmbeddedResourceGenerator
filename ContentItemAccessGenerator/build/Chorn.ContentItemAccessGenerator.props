@@ -1,12 +1,14 @@
 ﻿<Project>
-	<PropertyGroup>
-		<EnableDefaultContentItems>false</EnableDefaultContentItems>
-	</PropertyGroup>
-	<ItemDefinitionGroup>
-		<Content Condition="'%(Content.CopyToOutputDirectory)' != 'Never'">
-			<GenerateContentAccess>true</GenerateContentAccess>
-		</Content>
-	</ItemDefinitionGroup>
+	<Target Name="AddGenerateContentAccessToContent" BeforeTargets="BeforeCompile">
+		<ItemGroup>
+			<Content Update="@(Content)" Condition="'%(Content.CopyToOutputDirectory)' != 'Never'">
+				<GenerateContentAccess>true</GenerateContentAccess>
+			</Content>
+			<Content Update="@(Content)" Condition="'%(Content.CopyToOutputDirectory)' == 'Never'">
+				<GenerateContentAccess>false</GenerateContentAccess>
+			</Content>
+		</ItemGroup>
+	</Target>
 	<ItemGroup>
 		<CompilerVisibleItemMetadata Include="Content" MetadataName="GenerateContentAccess" />
 	</ItemGroup>
