@@ -1,0 +1,16 @@
+﻿<Project>
+	<PropertyGroup>
+		<EnableDefaultContentItems>false</EnableDefaultContentItems>
+	</PropertyGroup>
+	<ItemDefinitionGroup>
+		<Content Condition="'%(Content.CopyToOutputDirectory)' != 'Never'">
+			<GenerateContentAccess>true</GenerateContentAccess>
+		</Content>
+	</ItemDefinitionGroup>
+	<ItemGroup>
+		<CompilerVisibleItemMetadata Include="Content" MetadataName="GenerateContentAccess" />
+	</ItemGroup>
+	<PropertyGroup>
+		<AdditionalFileItemNames>$(AdditionalFileItemNames);Content</AdditionalFileItemNames>
+	</PropertyGroup>
+</Project>

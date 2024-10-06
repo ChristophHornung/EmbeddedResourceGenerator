@@ -1,0 +1,7 @@
+{
+	"profiles": {
+		"EmbeddedResourceAccessGenerator": {
+			"commandName": "Project"
+		}
+	}
+}

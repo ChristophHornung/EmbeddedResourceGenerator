@@ -1,0 +1,16 @@
+﻿<Project>
+	<PropertyGroup>
+		<EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+	</PropertyGroup>
+	<ItemDefinitionGroup>
+		<EmbeddedResource>
+			<GenerateEmbeddedResourceAccess>true</GenerateEmbeddedResourceAccess>
+		</EmbeddedResource>
+	</ItemDefinitionGroup>
+	<ItemGroup>
+		<CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="GenerateEmbeddedResourceAccess" />
+	</ItemGroup>
+	<PropertyGroup>
+		<AdditionalFileItemNames>$(AdditionalFileItemNames);EmbeddedResource</AdditionalFileItemNames>
+	</PropertyGroup>
+</Project>

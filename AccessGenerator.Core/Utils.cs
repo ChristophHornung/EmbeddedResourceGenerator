@@ -1,4 +1,4 @@
-﻿namespace AssetAccessGenerator;
+﻿namespace AccessGenerator.Core;
 
 using System.Text;
 using Microsoft.CodeAnalysis.CSharp;
@@ -46,7 +46,7 @@ internal static class Utils
 	/// results in satisfying .EndsWith(ending).
 	/// </summary>
 	/// <example>"hel".WithEnding("llo") returns "hello", which is the result of "hel" + "lo".</example>
-	private static string WithEnding(this string str, string ending)
+	private static string WithEnding(this string? str, string ending)
 	{
 		if (str == null)
 			return ending;

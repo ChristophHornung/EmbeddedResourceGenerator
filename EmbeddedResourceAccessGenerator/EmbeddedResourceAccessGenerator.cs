@@ -1,28 +1,28 @@
-﻿namespace AssetAccessGenerator;
+﻿namespace EmbeddedResourceAccessGenerator;
 
 using AccessGenerator.Core;
 using Microsoft.CodeAnalysis;
 
 /// <summary>
-/// The generator for the embedded and included resource access.
+/// The generator for the embedded resource access.
 /// </summary>
 [Generator]
-public class AssetAccessGenerator : IIncrementalGenerator
+public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 {
 	private static readonly DiagnosticDescriptor generationWarning = new DiagnosticDescriptor(
-		id: "AAGEN001",
+		id: "EMBRESGEN001",
 		title: "Exception on generation",
 		messageFormat: "Exception '{0}' {1}",
-		category: "AssetAccessGenerator",
+		category: "EmbeddedResourceAccessGenerator",
 		DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
 
 #if DEBUG
 	private static readonly DiagnosticDescriptor logInfo = new DiagnosticDescriptor(
-		id: "AAGENLOG",
+		id: "EMBRESGENLOG",
 		title: "Log",
 		messageFormat: "{0}",
-		category: "AssetAccessGenerator",
+		category: "EmbeddedResourceAccessGenerator",
 		DiagnosticSeverity.Warning,
 		isEnabledByDefault: true);
 #endif
@@ -33,19 +33,19 @@ public class AssetAccessGenerator : IIncrementalGenerator
 		//Debugger.Launch();
 
 		var combined= GeneratorHelper.GetConfiguredProvider(context);
-		context.RegisterSourceOutput(combined, AssetAccessGenerator.GenerateSourceIncremental);
+		context.RegisterSourceOutput(combined, EmbeddedResourceAccessGenerator.GenerateSourceIncremental);
 	}
 
 	private static void GenerateSourceIncremental(SourceProductionContext context, GenerationContext generationContext)
 	{
 		try
 		{
-			AssetAccessGenerator.GenerateSource(context, generationContext);
+			EmbeddedResourceAccessGenerator.GenerateSource(context, generationContext);
 		}
 		catch (Exception e)
 		{
 			// We generate a diagnostic message on all internal failures.
-			context.ReportDiagnostic(Diagnostic.Create(AssetAccessGenerator.generationWarning, Location.None,
+			context.ReportDiagnostic(Diagnostic.Create(EmbeddedResourceAccessGenerator.generationWarning, Location.None,
 				e.Message, e.StackTrace));
 		}
 	}
@@ -58,15 +58,13 @@ public class AssetAccessGenerator : IIncrementalGenerator
 			return;
 		}
 
-		EmbeddedResourceAccessGenerator.GenerateCode(context, generationContext);
-		FileAccessGenerator.GenerateCode(context, generationContext, ResourceKind.Content);
-		FileAccessGenerator.GenerateCode(context, generationContext, ResourceKind.None);
+		AccessGenerator.Core.EmbeddedResourceAccessGenerator.GenerateCode(context, generationContext);
 	}
 
 	private void Log(SourceProductionContext context, string log)
 	{
 #if DEBUG
-		context.ReportDiagnostic(Diagnostic.Create(AssetAccessGenerator.logInfo, Location.None, log));
+		context.ReportDiagnostic(Diagnostic.Create(EmbeddedResourceAccessGenerator.logInfo, Location.None, log));
 #endif
 	}
 }

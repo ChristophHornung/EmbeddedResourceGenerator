@@ -10,6 +10,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<CompilerVisibleItemMetadata Include="None" MetadataName="GenerateNoneAccess" />
 		<CompilerVisibleItemMetadata Include="Content" MetadataName="GenerateContentAccess" />
 		<CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="GenerateEmbeddedResourceAccess" />
 	</ItemGroup>
@@ -17,9 +18,13 @@
 	<PropertyGroup>
 		<EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
 		<EnableDefaultContentItems>false</EnableDefaultContentItems>
+		<EnableDefaultNoneItems>false</EnableDefaultNoneItems>
 	</PropertyGroup>
 
 	<ItemDefinitionGroup>
+		<None Condition="'%(None.CopyToOutputDirectory)' != 'Never'">
+			<GenerateNoneAccess>true</GenerateNoneAccess>
+		</None>
 		<Content Condition="'%(Content.CopyToOutputDirectory)' != 'Never'">
 			<GenerateContentAccess>true</GenerateContentAccess>
 		</Content>
@@ -41,11 +46,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\AssetAccessGenerator\AssetAccessGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	  <ProjectReference Include="..\EmbeddedResourceAccessGenerator\EmbeddedResourceAccessGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\ContentItemAccessGenerator\ContentItemAccessGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 	<PropertyGroup>
 		<!-- Update the property to include all EmbeddedResource files -->
-		<AdditionalFileItemNames>$(AdditionalFileItemNames);EmbeddedResource;Content</AdditionalFileItemNames>
+		<AdditionalFileItemNames>$(AdditionalFileItemNames);EmbeddedResource;Content;None</AdditionalFileItemNames>
 	</PropertyGroup>
 </Project>

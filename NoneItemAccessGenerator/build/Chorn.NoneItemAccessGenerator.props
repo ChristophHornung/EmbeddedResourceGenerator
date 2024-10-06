@@ -1,0 +1,16 @@
+﻿<Project>
+	<PropertyGroup>
+		<EnableDefaultNoneItems>false</EnableDefaultNoneItems>
+	</PropertyGroup>
+	<ItemDefinitionGroup>
+		<None Condition="'%(None.CopyToOutputDirectory)' != 'Never'">
+			<GenerateNoneAccess>true</GenerateNoneAccess>
+		</None>
+	</ItemDefinitionGroup>
+	<ItemGroup>
+		<CompilerVisibleItemMetadata Include="None" MetadataName="GenerateNoneAccess" />
+	</ItemGroup>
+	<PropertyGroup>
+		<AdditionalFileItemNames>$(AdditionalFileItemNames);None</AdditionalFileItemNames>
+	</PropertyGroup>
+</Project>
