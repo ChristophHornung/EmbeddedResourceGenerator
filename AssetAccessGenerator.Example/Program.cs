@@ -2,32 +2,24 @@
 
 internal class Program
 {
-	static void Main(string[] args)
+	private static void Main()
 	{
-		Program.Direct();
 		Program.Enum(EmbeddedResource.TestAsset_Test_txt);
 		Program.Enum(EmbeddedResource.TestAsset_Test2_txt);
 		Program.Enum(EmbeddedResource.RootTest_txt);
 		Program.EnumExtension(EmbeddedResource.RootTest_txt);
-		Program.EnumExtension(ContentFile.RootTest___content_txt);
-		Program.Enum(ContentFile.RootTest___content_txt);
+		Program.EnumExtension(Content.RootTest___content_txt);
+		Program.Enum(Content.RootTest___content_txt);
 	}
 
-	private static void Enum(ContentFile rootTestInclTxt)
+	private static void Enum(Content rootTestInclTxt)
 	{
-		Console.WriteLine(ContentFilesExtensions.ReadAllText(rootTestInclTxt));
+		Console.WriteLine(Contents.ReadAllText(rootTestInclTxt));
 	}
 
-	private static void EnumExtension(ContentFile rootTestInclTxt)
+	private static void EnumExtension(Content rootTestInclTxt)
 	{
 		Console.WriteLine(rootTestInclTxt.ReadAllText());
-	}
-
-	private static void Direct()
-	{
-		using Stream s = EmbeddedResources.TestAsset_Test_txt_Stream;
-		using StreamReader sr = new StreamReader(s);
-		Console.WriteLine(sr.ReadToEnd());
 	}
 
 	private static void Enum(EmbeddedResource resource)

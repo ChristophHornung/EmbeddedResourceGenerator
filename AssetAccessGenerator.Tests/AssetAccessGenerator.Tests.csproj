@@ -34,9 +34,9 @@
 	</PropertyGroup>
 
   <ItemDefinitionGroup>
-		<Content>
+		<Content Condition="'%(Content.CopyToOutputDirectory)' != 'Never'">
 			<GenerateContentAccess>true</GenerateContentAccess>
-	  </Content>
+		</Content>
 		<EmbeddedResource>
 			<GenerateEmbeddedResourceAccess>true</GenerateEmbeddedResourceAccess>
 		</EmbeddedResource>

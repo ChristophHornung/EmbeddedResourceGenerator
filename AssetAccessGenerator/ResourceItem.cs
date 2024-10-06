@@ -40,7 +40,8 @@ public enum ResourceKind
 {
     Unspecified,
     EmbeddedResource,
-    Content
+    Content,
+    None
 }
 
 /// <summary>

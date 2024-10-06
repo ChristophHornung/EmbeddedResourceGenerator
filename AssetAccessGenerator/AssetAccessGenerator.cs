@@ -56,6 +56,15 @@ public class AssetAccessGenerator : IIncrementalGenerator
 						//	: (file.Path, Kind: ResourceKind.Unspecified);
 					}
 
+					var none = options.TryGetValue("build_metadata.None.GenerateNoneAccess",
+						              out var generateNoneAccess)
+					              && generateNoneAccess == "true";
+
+					if (none)
+					{
+						return (file.Path, Kind: ResourceKind.None);
+					}
+
 					var embedded = options.TryGetValue("build_metadata.EmbeddedResource.GenerateEmbeddedResourceAccess",
 									   out var generateEmbeddedResourceAccess)
 								   && generateEmbeddedResourceAccess == "true";
@@ -131,7 +140,8 @@ public class AssetAccessGenerator : IIncrementalGenerator
 		}
 
 		EmbeddedResourceAccessGenerator.GenerateCode(context, generationContext);
-		ContentFileAccessGenerator.GenerateCode(context, generationContext);
+		FileAccessGenerator.GenerateCode(context, generationContext, ResourceKind.Content);
+		FileAccessGenerator.GenerateCode(context, generationContext, ResourceKind.None);
 	}
 
 	private void Log(SourceProductionContext context, string log)

@@ -15,11 +15,8 @@ public class EmbeddedAssetAccessGeneratorTests
 		using var reader = EmbeddedResource.TestAssets_Test_txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
 
-		using var reader2 = EmbeddedResources.TestAssets_Test_txt_Reader;
+		using var reader2 = EmbeddedResource_TestAssets.Test_txt.GetReader();
 		Assert.Equal("Success", reader2.ReadToEnd());
-
-		using var reader3 = EmbeddedResourceTestAssets.Test_txt.GetReader();
-		Assert.Equal("Success", reader3.ReadToEnd());
 	}
 
 	[Fact]
@@ -28,11 +25,8 @@ public class EmbeddedAssetAccessGeneratorTests
 		using var reader = EmbeddedResource.TestAssets_Test_With_Spaces_txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
 
-		using var reader2 = EmbeddedResources.TestAssets_Test_With_Spaces_txt_Reader;
+		using var reader2 = EmbeddedResource_TestAssets.Test_With_Spaces_txt.GetReader();
 		Assert.Equal("Success", reader2.ReadToEnd());
-
-		using var reader3 = EmbeddedResourceTestAssets.Test_With_Spaces_txt.GetReader();
-		Assert.Equal("Success", reader3.ReadToEnd());
 	}
 
 	[Fact]
@@ -41,11 +35,8 @@ public class EmbeddedAssetAccessGeneratorTests
 		using var reader = EmbeddedResource.TestAssets_Subfolder_With_Spaces_Test_With_Spaces_txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
 
-		using var reader2 = EmbeddedResources.TestAssets_Subfolder_With_Spaces_Test_With_Spaces_txt_Reader;
+		using var reader2 = EmbeddedResource_TestAssets_Subfolder_With_Spaces.Test_With_Spaces_txt.GetReader();
 		Assert.Equal("Success", reader2.ReadToEnd());
-
-		using var reader3 = EmbeddedResourceTestAssetsSubfolder_With_Spaces.Test_With_Spaces_txt.GetReader();
-		Assert.Equal("Success", reader3.ReadToEnd());
 	}
 
 	[Fact]
@@ -53,9 +44,6 @@ public class EmbeddedAssetAccessGeneratorTests
 	{
 		using var reader = EmbeddedResource.TestAssets_Test_txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
-
-		using var reader2 = EmbeddedResources.TestAssets_Test_txt_Reader;
-		Assert.Equal("Success", reader2.ReadToEnd());
 	}
 
 	[Fact]
@@ -64,11 +52,8 @@ public class EmbeddedAssetAccessGeneratorTests
 		using var reader = EmbeddedResource.TestAssets_Subfolder_Test_txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
 
-		using var reader2 = EmbeddedResources.TestAssets_Subfolder_Test_txt_Reader;
+		using var reader2 = EmbeddedResource_TestAssets_Subfolder.Test_txt.GetReader();
 		Assert.Equal("Success", reader2.ReadToEnd());
-
-		using var reader3 = EmbeddedResourceTestAssetsSubfolder.Test_txt.GetReader();
-		Assert.Equal("Success", reader3.ReadToEnd());
 	}
 
 	[Fact]
@@ -77,11 +62,11 @@ public class EmbeddedAssetAccessGeneratorTests
 		using var reader = EmbeddedResource.TestAssets_2InvalidChars___txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
 
-		using var reader2 = EmbeddedResources.TestAssets_2InvalidChars___txt_Reader;
-		Assert.Equal("Success", reader2.ReadToEnd());
+		var text = EmbeddedResource.TestAssets_2InvalidChars___txt.ReadAllText();
+		Assert.Equal("Success", text);
 
-		using var reader3 = EmbeddedResourceTestAssets._InvalidChars___txt.GetReader();
-		Assert.Equal("Success", reader3.ReadToEnd());
+		using var reader2 = EmbeddedResource_TestAssets._InvalidChars___txt.GetReader();
+		Assert.Equal("Success", reader2.ReadToEnd());
 	}
 
 	[Fact]
@@ -91,11 +76,8 @@ public class EmbeddedAssetAccessGeneratorTests
 		using var reader = EmbeddedResource.TestAssets___InvalidChars_Test_txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
 
-		using var reader2 = EmbeddedResources.TestAssets___InvalidChars_Test_txt_Reader;
+		using var reader2 = EmbeddedResource_TestAssets___InvalidChars.Test_txt.GetReader();
 		Assert.Equal("Success", reader2.ReadToEnd());
-
-		using var reader3 = EmbeddedResourceTestAssets__InvalidChars.Test_txt.GetReader();
-		Assert.Equal("Success", reader3.ReadToEnd());
 	}
 
 	[Fact]
@@ -103,8 +85,5 @@ public class EmbeddedAssetAccessGeneratorTests
 	{
 		using var reader = EmbeddedResource._InvalidChars___txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
-
-		using var reader2 = EmbeddedResources._InvalidChars___txt_Reader;
-		Assert.Equal("Success", reader2.ReadToEnd());
 	}
 }
