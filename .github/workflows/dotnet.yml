@@ -23,8 +23,18 @@ jobs:
       run: dotnet build --no-restore --configuration Release
     - name: Test
       run: dotnet test --no-build --verbosity normal --configuration Release --filter FullyQualifiedName!~Example
-    - name: Archive nuget-package artifact
+    - name: Archive nuget-package embedded-resource-access-generator-artifact
       uses: actions/upload-artifact@v3
       with:
         name: nuget-package
-        path: ${{ github.workspace }}/AssetAccessGenerator/bin/Release/*.nupkg
+        path: ${{ github.workspace }}/EmbeddedResourceAccessGenerator/bin/Release/*.nupkg
+    - name: Archive nuget-package content-item-access-generator-artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: nuget-package
+        path: ${{ github.workspace }}/ContentItemAccessGenerator/bin/Release/*.nupkg
+    - name: Archive nuget-package none-item-access-generator-artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: nuget-package
+        path: ${{ github.workspace }}/NoneItemAccessGenerator/bin/Release/*.nupkg
