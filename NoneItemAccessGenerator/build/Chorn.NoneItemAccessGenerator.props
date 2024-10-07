@@ -1,10 +1,10 @@
 ﻿<Project>
 	<Target Name="AddGenerateNoneAccessToNone" BeforeTargets="BeforeCompile">
 		<ItemGroup>
-			<None Update="@(None)" Condition="'%(None.CopyToOutputDirectory)' != 'Never'">
+			<None Update="@(None)" Condition="'%(None.CopyToOutputDirectory)' == 'PreserveNewest' || '%(None.CopyToOutputDirectory)' == 'Always'">
 				<GenerateNoneAccess>true</GenerateNoneAccess>
 			</None>
-			<None Update="@(None)" Condition="'%(None.CopyToOutputDirectory)' == 'Never'">
+			<None Update="@(None)" Condition="!('%(None.CopyToOutputDirectory)' == 'PreserveNewest' || '%(None.CopyToOutputDirectory)' == 'Always')">
 				<GenerateNoneAccess>false</GenerateNoneAccess>
 			</None>
 		</ItemGroup>
