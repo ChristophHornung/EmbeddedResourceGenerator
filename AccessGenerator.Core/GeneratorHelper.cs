@@ -12,7 +12,7 @@ public static class GeneratorHelper
 		// We need a value provider for any addition file.
 		// As soon as there is direct access to embedded resources we can change this.
 		// All embedded resources are added as additional files through our build props integrated into the nuget.
-		IncrementalValueProvider<ImmutableArray<(string Path, ResourceKind Kind)>> additionaFilesProvider =
+		IncrementalValueProvider<ImmutableArray<(string Path, ResourceKind Kind)>> additionalFilesProvider =
 			context.AdditionalTextsProvider
 				.Combine(context.AnalyzerConfigOptionsProvider) // Combine with options provider
 				.Select((fileAndOptions, _) =>
@@ -70,7 +70,7 @@ public static class GeneratorHelper
 					: null);
 
 		// We combine the providers to generate the parameters for our source generation.
-		IncrementalValueProvider<GenerationContext> combined = additionaFilesProvider
+		IncrementalValueProvider<GenerationContext> combined = additionalFilesProvider
 				.Combine(rootNamespaceProvider.Combine(buildProjectDirProvider)).Select((c, _) =>
 					(c.Left, c.Right.Left, c.Right.Right))
 				.Select(GeneratorHelper.MapToResourceGenerationContext);
@@ -81,6 +81,12 @@ public static class GeneratorHelper
 	private static GenerationContext MapToResourceGenerationContext((ImmutableArray<(string Path, ResourceKind Kind)>, string?, string? Right) tuple, CancellationToken cancellationToken)
 	{
 		var (pathAndKinds, rootNamespace, buildProjectDir) = tuple;
+
+		if (buildProjectDir == null || rootNamespace == null)
+		{
+			return new GenerationContext(ImmutableArray<ResourceItem>.Empty, rootNamespace ?? "EmptyRootNamespace");
+		}
+
 		return new GenerationContext([
 			..pathAndKinds.Select(pathAndKind =>
 			{

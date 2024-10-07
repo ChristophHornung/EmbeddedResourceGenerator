@@ -17,20 +17,20 @@
 
 	<Target Name="AddGenerateNoneAccessToNone" BeforeTargets="BeforeCompile">
 		<ItemGroup>
-			<None Update="@(None)" Condition="'%(None.CopyToOutputDirectory)' != 'Never'">
+			<None Update="@(None)" Condition="'%(None.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(None.CopyToOutputDirectory)' == 'Always'">
 				<GenerateNoneAccess>true</GenerateNoneAccess>
 			</None>
-			<None Update="@(None)" Condition="'%(None.CopyToOutputDirectory)' == 'Never'">
+			<None Update="@(None)" Condition="!('%(None.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(None.CopyToOutputDirectory)' == 'Always')">
 				<GenerateNoneAccess>false</GenerateNoneAccess>
 			</None>
 		</ItemGroup>
 	</Target>
 	<Target Name="AddGenerateContentAccessToContent" BeforeTargets="BeforeCompile">
 		<ItemGroup>
-			<Content Update="@(Content)" Condition="'%(Content.CopyToOutputDirectory)' != 'Never'">
+			<Content Update="@(Content)" Condition="'%(Content.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(Content.CopyToOutputDirectory)' == 'Always'">
 				<GenerateContentAccess>true</GenerateContentAccess>
 			</Content>
-			<Content Update="@(Content)" Condition="'%(Content.CopyToOutputDirectory)' == 'Never'">
+			<Content Update="@(Content)" Condition="!('%(Content.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(Content.CopyToOutputDirectory)' == 'Always')">
 				<GenerateContentAccess>false</GenerateContentAccess>
 			</Content>
 		</ItemGroup>

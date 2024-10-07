@@ -1,10 +1,10 @@
 ﻿<Project>
 	<Target Name="AddGenerateContentAccessToContent" BeforeTargets="BeforeCompile">
 		<ItemGroup>
-			<Content Update="@(Content)" Condition="'%(Content.CopyToOutputDirectory)' == 'PreserveNewest' || '%(Content.CopyToOutputDirectory)' == 'Always'">
+			<Content Update="@(Content)" Condition="'%(Content.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(Content.CopyToOutputDirectory)' == 'Always'">
 				<GenerateContentAccess>true</GenerateContentAccess>
 			</Content>
-			<Content Update="@(Content)" Condition="!('%(Content.CopyToOutputDirectory)' == 'PreserveNewest' || '%(Content.CopyToOutputDirectory)' == 'Always')">
+			<Content Update="@(Content)" Condition="!('%(Content.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(Content.CopyToOutputDirectory)' == 'Always')">
 				<GenerateContentAccess>false</GenerateContentAccess>
 			</Content>
 		</ItemGroup>
