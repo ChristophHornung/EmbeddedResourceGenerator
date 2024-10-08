@@ -5,7 +5,6 @@ using Xunit;
 public class ContentFilesTests
 {
 	[Fact]
-	[Fact]
 	public async Task ContentTestTxtIsAccessible()
 	{
 		using var reader = Content.TestContentAssets_ContentTest_txt.GetReader();
