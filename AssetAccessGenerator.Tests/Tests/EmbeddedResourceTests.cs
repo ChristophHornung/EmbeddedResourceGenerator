@@ -81,9 +81,17 @@ public class EmbeddedAssetAccessGeneratorTests
 	}
 
 	[Fact]
-	public void InvalidCharsRootTxtIsAccessible()
+	public async Task InvalidCharsRootTxtIsAccessible()
 	{
 		using var reader = EmbeddedResource._InvalidChars___txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
+
+		var bytes1 = await EmbeddedResource._InvalidChars___txt.ReadAllBytesAsync(CancellationToken.None);
+
+		Assert.Equivalent(new byte[] { 239, 187, 191, 83, 117, 99, 99, 101, 115, 115 }, bytes1);
+
+		var bytes2 = EmbeddedResource._InvalidChars___txt.ReadAllBytes();
+
+		Assert.Equivalent(new byte[] { 239, 187, 191, 83, 117, 99, 99, 101, 115, 115 }, bytes2);
 	}
 }

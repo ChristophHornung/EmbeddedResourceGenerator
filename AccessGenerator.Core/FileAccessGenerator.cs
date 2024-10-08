@@ -33,46 +33,67 @@ public static class FileAccessGenerator
 		                           {
 		                           """);
 
-		sourceBuilder.AppendLine($$$$"""
+		sourceBuilder.AppendLine($$$$$"""
 		                           	/// <summary>
-		                           	/// Gets the {{{{kindLowerCase}}}} file's stream.
+		                           	/// Gets the {{{{{kindLowerCase}}}}} file's stream.
 		                           	/// </summary>
-		                           	/// <param name="file">The {{{{kindLowerCase}}}} file to retrieve the stream for.</param>
-		                           	/// <returns>The stream to access the {{{{kindLowerCase}}}} file.</returns>
-		                           	public static Stream GetStream(this {{{{kind}}}} file)
+		                           	/// <param name="file">The {{{{{kindLowerCase}}}}} file to retrieve the stream for.</param>
+		                           	/// <returns>The stream to access the {{{{{kindLowerCase}}}}} file.</returns>
+		                           	public static Stream GetStream(this {{{{{kind}}}}} file)
 		                           	{
-		                           		return File.OpenRead({{{{getItemPathMethodName}}}}(file))!;
+		                           		return File.OpenRead({{{{{getItemPathMethodName}}}}}(file))!;
 		                           	}
 		                           
 		                           	/// <summary>
-		                           	/// Gets the {{{{kindLowerCase}}}} file's stream-reader.
+		                           	/// Gets the {{{{{kindLowerCase}}}}} file's stream-reader.
 		                           	/// </summary>
-		                           	/// <param name="file">The {{{{kindLowerCase}}}} file to retrieve the stream-reader for.</param>
-		                           	/// <returns>The stream-reader to access the {{{{kindLowerCase}}}} file.</returns>
-		                           	public static StreamReader GetReader(this {{{{kind}}}} file)
+		                           	/// <param name="file">The {{{{{kindLowerCase}}}}} file to retrieve the stream-reader for.</param>
+		                           	/// <returns>The stream-reader to access the {{{{{kindLowerCase}}}}} file.</returns>
+		                           	public static StreamReader GetReader(this {{{{{kind}}}}} file)
 		                           	{
-		                           		return new StreamReader(File.OpenRead({{{{getItemPathMethodName}}}}(file))!, leaveOpen:false);
+		                           		return new StreamReader(File.OpenRead({{{{{getItemPathMethodName}}}}}(file))!, leaveOpen:false);
 		                           	}
 		                           	
 		                           	/// <summary>
-		                           	/// Reads the {{{{kindLowerCase}}}} file's text asynchronously.
+		                           	/// Reads the {{{{{kindLowerCase}}}}} file's bytes asynchronously.
 		                           	/// </summary>
-		                           	/// <param name="file">The {{{{kindLowerCase}}}} file to read all text.</param>
+		                           	/// <param name="file">The {{{{{kindLowerCase}}}}} file to read all bytes.</param>
+		                           	/// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
+		                           	/// <returns>bytes.</returns>
+		                           	public static async Task<byte[]> ReadAllBytesAsync(this {{{{{kind}}}}} file, CancellationToken cancellationToken = default(CancellationToken))
+		                           	{
+		                           	    return await File.ReadAllBytesAsync({{{{{getItemPathMethodName}}}}}(file), cancellationToken)!;
+		                           	}
+		                           	
+		                           	/// <summary>
+		                           	/// Reads the {{{{{kindLowerCase}}}}} file's bytes.
+		                           	/// </summary>
+		                           	/// <param name="file">The {{{{{kindLowerCase}}}}} file to read all bytes.</param>
+		                           	/// <returns>bytes.</returns>
+		                           	public static byte[] ReadAllBytes(this {{{{{kind}}}}} file)
+		                           	{
+		                           	    return File.ReadAllBytes({{{{{getItemPathMethodName}}}}}(file))!;
+		                           	}
+		                           	
+		                           	/// <summary>
+		                           	/// Reads the {{{{{kindLowerCase}}}}} file's text asynchronously.
+		                           	/// </summary>
+		                           	/// <param name="file">The {{{{{kindLowerCase}}}}} file to read all text.</param>
 		                           	/// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
 		                           	/// <returns>text.</returns>
-		                           	public static async Task<string> ReadAllTextAsync(this {{{{kind}}}} file, CancellationToken cancellationToken = default(CancellationToken))
+		                           	public static async Task<string> ReadAllTextAsync(this {{{{{kind}}}}} file, CancellationToken cancellationToken = default(CancellationToken))
 		                           	{
-		                           	    return await File.ReadAllTextAsync({{{{getItemPathMethodName}}}}(file), cancellationToken)!;
+		                           	    return await File.ReadAllTextAsync({{{{{getItemPathMethodName}}}}}(file), cancellationToken)!;
 		                           	}
 		                           	
 		                           	/// <summary>
-		                           	/// Reads the {{{{kindLowerCase}}}} file's text.
+		                           	/// Reads the {{{{{kindLowerCase}}}}} file's text.
 		                           	/// </summary>
-		                           	/// <param name="file">The {{{{kindLowerCase}}}} file to read all text.</param>
+		                           	/// <param name="file">The {{{{{kindLowerCase}}}}} file to read all text.</param>
 		                           	/// <returns>text.</returns>
-		                           	public static string ReadAllText(this {{{{kind}}}} file)
+		                           	public static string ReadAllText(this {{{{{kind}}}}} file)
 		                           	{
-		                           	    return File.ReadAllText({{{{getItemPathMethodName}}}}(file))!;
+		                           	    return File.ReadAllText({{{{{getItemPathMethodName}}}}}(file))!;
 		                           	}
 		                           	
 		                           """);
@@ -98,9 +119,9 @@ public static class FileAccessGenerator
 
 		sourceBuilder.AppendLine("""			_ => throw new InvalidOperationException(),""");
 
-		sourceBuilder.AppendLine("\t\t};");
+		sourceBuilder.AppendLine("        };");
 
-		sourceBuilder.AppendLine("\t}");
+		sourceBuilder.AppendLine("    }");
 
 		foreach (IGrouping<string, ResourceItem> pathGrouped in contentFiles.GroupBy(g =>
 					 Path.GetDirectoryName(g.RelativePath)))
@@ -131,14 +152,35 @@ public static class FileAccessGenerator
 				                           	}
 				                           	
 				                           	/// <summary>
-				                            /// Reads the {{{kindLowerCase}}} file's text asynchronously.
-				                            /// </summary>
-				                            /// <param name="file">The {{{kindLowerCase}}} file to read all text.</param>
-				                            /// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
-				                            /// <returns>text.</returns>
+				                           	/// Reads the {{{kindLowerCase}}} file's bytes asynchronously.
+				                           	/// </summary>
+				                           	/// <param name="file">The {{{kindLowerCase}}} file to read all bytes.</param>
+				                           	/// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
+				                           	/// <returns>bytes.</returns>
+				                           	public static async Task<byte[]> ReadAllBytesAsync(this {{{kind}}}_{{{pathAsClassName}}} file, CancellationToken cancellationToken = default(CancellationToken))
+				                           	{
+				                           	    return await File.ReadAllBytesAsync({{{getItemPathMethodName}}}(file), cancellationToken)!;
+				                           	}
+				                           	
+				                           	/// <summary>
+				                           	/// Reads the {{{kindLowerCase}}} file's bytes.
+				                           	/// </summary>
+				                           	/// <param name="file">The {{{kindLowerCase}}} file to read all bytes.</param>
+				                           	/// <returns>bytes.</returns>
+				                           	public static byte[] ReadAllBytes(this {{{kind}}}_{{{pathAsClassName}}} file)
+				                           	{
+				                           	    return File.ReadAllBytes({{{getItemPathMethodName}}}(file))!;
+				                           	}
+				                           	
+				                           	/// <summary>
+				                           	/// Reads the {{{kindLowerCase}}} file's text asynchronously.
+				                           	/// </summary>
+				                           	/// <param name="file">The {{{kindLowerCase}}} file to read all text.</param>
+				                           	/// <param name="cancellationToken">The token to monitor for cancellation requests. The default value is System.Threading.CancellationToken.None.</param>
+				                           	/// <returns>text.</returns>
 				                           	public static async Task<string> ReadAllTextAsync(this {{{kind}}}_{{{pathAsClassName}}} file, CancellationToken cancellationToken = default(CancellationToken))
 				                           	{
-				                           		return await File.ReadAllTextAsync({{{getItemPathMethodName}}}(file), cancellationToken)!;
+				                           	    return await File.ReadAllTextAsync({{{getItemPathMethodName}}}(file), cancellationToken)!;
 				                           	}
 				                           	
 				                           	/// <summary>
@@ -148,7 +190,7 @@ public static class FileAccessGenerator
 				                           	/// <returns>text.</returns>
 				                           	public static string ReadAllText(this {{{kind}}}_{{{pathAsClassName}}} file)
 				                           	{
-				                           		return File.ReadAllText({{{getItemPathMethodName}}}(file))!;
+				                           	    return File.ReadAllText({{{getItemPathMethodName}}}(file))!;
 				                           	}
 				                           	
 				                           """);
@@ -177,9 +219,9 @@ public static class FileAccessGenerator
 
 				sourceBuilder.AppendLine("""			_ => throw new InvalidOperationException(),""");
 
-				sourceBuilder.AppendLine("\t\t};");
+				sourceBuilder.AppendLine("        };");
 
-				sourceBuilder.AppendLine("\t}");
+				sourceBuilder.AppendLine("    }");
 			}
 		}
 
