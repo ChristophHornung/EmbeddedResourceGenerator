@@ -1,4 +1,4 @@
-﻿namespace EmbeddedResourceAccessGenerator.Tests.Tests;
+﻿namespace AssetAccessGenerator.Tests.Tests;
 
 using System.Diagnostics;
 using Xunit;
@@ -7,7 +7,7 @@ using Xunit;
 /// The main tests. This file is deliberately not in the root folder to test that the generator works no
 /// files in the csproj folder.
 /// </summary>
-public class EmbeddedResourceAccessGeneratorTests
+public class EmbeddedAssetAccessGeneratorTests
 {
 	[Fact]
 	public void TestTxtIsAccessible()
@@ -15,11 +15,8 @@ public class EmbeddedResourceAccessGeneratorTests
 		using var reader = EmbeddedResource.TestAssets_Test_txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
 
-		using var reader2 = EmbeddedResources.TestAssets_Test_txt_Reader;
+		using var reader2 = EmbeddedResource_TestAssets.Test_txt.GetReader();
 		Assert.Equal("Success", reader2.ReadToEnd());
-
-		using var reader3 = EmbeddedResourceTestAssets.Test_txt.GetReader();
-		Assert.Equal("Success", reader3.ReadToEnd());
 	}
 
 	[Fact]
@@ -28,11 +25,8 @@ public class EmbeddedResourceAccessGeneratorTests
 		using var reader = EmbeddedResource.TestAssets_Test_With_Spaces_txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
 
-		using var reader2 = EmbeddedResources.TestAssets_Test_With_Spaces_txt_Reader;
+		using var reader2 = EmbeddedResource_TestAssets.Test_With_Spaces_txt.GetReader();
 		Assert.Equal("Success", reader2.ReadToEnd());
-
-		using var reader3 = EmbeddedResourceTestAssets.Test_With_Spaces_txt.GetReader();
-		Assert.Equal("Success", reader3.ReadToEnd());
 	}
 
 	[Fact]
@@ -41,21 +35,15 @@ public class EmbeddedResourceAccessGeneratorTests
 		using var reader = EmbeddedResource.TestAssets_Subfolder_With_Spaces_Test_With_Spaces_txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
 
-		using var reader2 = EmbeddedResources.TestAssets_Subfolder_With_Spaces_Test_With_Spaces_txt_Reader;
+		using var reader2 = EmbeddedResource_TestAssets_Subfolder_With_Spaces.Test_With_Spaces_txt.GetReader();
 		Assert.Equal("Success", reader2.ReadToEnd());
-
-		using var reader3 = EmbeddedResourceTestAssetsSubfolder_With_Spaces.Test_With_Spaces_txt.GetReader();
-		Assert.Equal("Success", reader3.ReadToEnd());
 	}
 
 	[Fact]
 	public void RootTestTxtIsAccessible()
 	{
-		using var reader = EmbeddedResource.Test_txt.GetReader();
+		using var reader = EmbeddedResource.TestAssets_Test_txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
-
-		using var reader2 = EmbeddedResources.Test_txt_Reader;
-		Assert.Equal("Success", reader2.ReadToEnd());
 	}
 
 	[Fact]
@@ -64,11 +52,8 @@ public class EmbeddedResourceAccessGeneratorTests
 		using var reader = EmbeddedResource.TestAssets_Subfolder_Test_txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
 
-		using var reader2 = EmbeddedResources.TestAssets_Subfolder_Test_txt_Reader;
+		using var reader2 = EmbeddedResource_TestAssets_Subfolder.Test_txt.GetReader();
 		Assert.Equal("Success", reader2.ReadToEnd());
-
-		using var reader3 = EmbeddedResourceTestAssetsSubfolder.Test_txt.GetReader();
-		Assert.Equal("Success", reader3.ReadToEnd());
 	}
 
 	[Fact]
@@ -77,11 +62,11 @@ public class EmbeddedResourceAccessGeneratorTests
 		using var reader = EmbeddedResource.TestAssets_2InvalidChars___txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
 
-		using var reader2 = EmbeddedResources.TestAssets_2InvalidChars___txt_Reader;
-		Assert.Equal("Success", reader2.ReadToEnd());
+		var text = EmbeddedResource.TestAssets_2InvalidChars___txt.ReadAllText();
+		Assert.Equal("Success", text);
 
-		using var reader3 = EmbeddedResourceTestAssets._InvalidChars___txt.GetReader();
-		Assert.Equal("Success", reader3.ReadToEnd());
+		using var reader2 = EmbeddedResource_TestAssets._InvalidChars___txt.GetReader();
+		Assert.Equal("Success", reader2.ReadToEnd());
 	}
 
 	[Fact]
@@ -91,20 +76,22 @@ public class EmbeddedResourceAccessGeneratorTests
 		using var reader = EmbeddedResource.TestAssets___InvalidChars_Test_txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
 
-		using var reader2 = EmbeddedResources.TestAssets___InvalidChars_Test_txt_Reader;
+		using var reader2 = EmbeddedResource_TestAssets___InvalidChars.Test_txt.GetReader();
 		Assert.Equal("Success", reader2.ReadToEnd());
-
-		using var reader3 = EmbeddedResourceTestAssets__InvalidChars.Test_txt.GetReader();
-		Assert.Equal("Success", reader3.ReadToEnd());
 	}
 
 	[Fact]
-	public void InvalidCharsRootTxtIsAccessible()
+	public async Task InvalidCharsRootTxtIsAccessible()
 	{
 		using var reader = EmbeddedResource._InvalidChars___txt.GetReader();
 		Assert.Equal("Success", reader.ReadToEnd());
 
-		using var reader2 = EmbeddedResources._InvalidChars___txt_Reader;
-		Assert.Equal("Success", reader2.ReadToEnd());
+		var bytes1 = await EmbeddedResource._InvalidChars___txt.ReadAllBytesAsync(CancellationToken.None);
+
+		Assert.Equivalent(new byte[] { 239, 187, 191, 83, 117, 99, 99, 101, 115, 115 }, bytes1);
+
+		var bytes2 = EmbeddedResource._InvalidChars___txt.ReadAllBytes();
+
+		Assert.Equivalent(new byte[] { 239, 187, 191, 83, 117, 99, 99, 101, 115, 115 }, bytes2);
 	}
 }

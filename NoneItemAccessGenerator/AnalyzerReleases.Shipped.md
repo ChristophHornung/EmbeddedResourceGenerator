@@ -6,4 +6,4 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|--------------------
-EMBRESGEN001  |  EmbeddedResourceAccessGenerator   |  Error | An unknown exception occured during generation.
+NONEITMGEN001  |  NoneItemAccessGenerator   |  Error | An unknown exception occured during generation.

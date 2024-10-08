@@ -1,21 +1,25 @@
-﻿namespace EmbeddedResourceAccessGenerator.Example;
+﻿namespace AssetAccessGenerator.Example;
 
 internal class Program
 {
-	static void Main(string[] args)
+	private static void Main()
 	{
-		Program.Direct();
 		Program.Enum(EmbeddedResource.TestAsset_Test_txt);
 		Program.Enum(EmbeddedResource.TestAsset_Test2_txt);
 		Program.Enum(EmbeddedResource.RootTest_txt);
 		Program.EnumExtension(EmbeddedResource.RootTest_txt);
+		Program.EnumExtension(Content.RootTest___content_txt);
+		Program.Enum(Content.RootTest___content_txt);
 	}
 
-	private static void Direct()
+	private static void Enum(Content rootTestInclTxt)
 	{
-		using Stream s = EmbeddedResources.TestAsset_Test_txt_Stream;
-		using StreamReader sr = new StreamReader(s);
-		Console.WriteLine(sr.ReadToEnd());
+		Console.WriteLine(Contents.ReadAllText(rootTestInclTxt));
+	}
+
+	private static void EnumExtension(Content rootTestInclTxt)
+	{
+		Console.WriteLine(rootTestInclTxt.ReadAllText());
 	}
 
 	private static void Enum(EmbeddedResource resource)

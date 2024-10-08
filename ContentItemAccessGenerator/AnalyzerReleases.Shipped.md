@@ -6,4 +6,4 @@
 
 Rule ID | Category | Severity | Notes
 --------|----------|----------|--------------------
-EMBRESGEN001  |  EmbeddedResourceAccessGenerator   |  Error | An unknown exception occured during generation.
+CONTITMGEN001  |  ContentItemAccessGenerator   |  Error | An unknown exception occured during generation.

@@ -1,0 +1,18 @@
+﻿<Project>
+	<Target Name="AddGenerateNoneAccessToNone" BeforeTargets="BeforeCompile">
+		<ItemGroup>
+			<None Update="@(None)" Condition="'%(None.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(None.CopyToOutputDirectory)' == 'Always'">
+				<GenerateNoneAccess>true</GenerateNoneAccess>
+			</None>
+			<None Update="@(None)" Condition="!('%(None.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(None.CopyToOutputDirectory)' == 'Always')">
+				<GenerateNoneAccess>false</GenerateNoneAccess>
+			</None>
+		</ItemGroup>
+	</Target>
+	<ItemGroup>
+		<CompilerVisibleItemMetadata Include="None" MetadataName="GenerateNoneAccess" />
+	</ItemGroup>
+	<PropertyGroup>
+		<AdditionalFileItemNames>$(AdditionalFileItemNames);None</AdditionalFileItemNames>
+	</PropertyGroup>
+</Project>

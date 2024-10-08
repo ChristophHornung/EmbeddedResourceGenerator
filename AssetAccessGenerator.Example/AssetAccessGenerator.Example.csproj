@@ -1,0 +1,67 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="RootTest - content.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<CompilerVisibleItemMetadata Include="None" MetadataName="GenerateNoneAccess" />
+		<CompilerVisibleItemMetadata Include="Content" MetadataName="GenerateContentAccess" />
+		<CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="GenerateEmbeddedResourceAccess" />
+	</ItemGroup>
+
+	<Target Name="AddGenerateNoneAccessToNone" BeforeTargets="BeforeCompile">
+		<ItemGroup>
+			<None Update="@(None)" Condition="'%(None.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(None.CopyToOutputDirectory)' == 'Always'">
+				<GenerateNoneAccess>true</GenerateNoneAccess>
+			</None>
+			<None Update="@(None)" Condition="!('%(None.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(None.CopyToOutputDirectory)' == 'Always')">
+				<GenerateNoneAccess>false</GenerateNoneAccess>
+			</None>
+		</ItemGroup>
+	</Target>
+	<Target Name="AddGenerateContentAccessToContent" BeforeTargets="BeforeCompile">
+		<ItemGroup>
+			<Content Update="@(Content)" Condition="'%(Content.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(Content.CopyToOutputDirectory)' == 'Always'">
+				<GenerateContentAccess>true</GenerateContentAccess>
+			</Content>
+			<Content Update="@(Content)" Condition="!('%(Content.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(Content.CopyToOutputDirectory)' == 'Always')">
+				<GenerateContentAccess>false</GenerateContentAccess>
+			</Content>
+		</ItemGroup>
+	</Target>
+	<Target Name="AddGenerateEmbeddedResourceAccessToEmbeddedResources" BeforeTargets="BeforeCompile">
+		<ItemGroup>
+			<EmbeddedResource Update="@(EmbeddedResource)">
+				<GenerateEmbeddedResourceAccess>true</GenerateEmbeddedResourceAccess>
+			</EmbeddedResource>
+		</ItemGroup>
+	</Target>
+	
+	<ItemGroup>
+		<Content Include="TestAsset\TestNoEmbedd.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="RootTest - content.txt">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<EmbeddedResource Include="RootTest.txt" />
+		<EmbeddedResource Include="TestAsset\Test2.txt" />
+		<EmbeddedResource Include="TestAsset\Test.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\EmbeddedResourceAccessGenerator\EmbeddedResourceAccessGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\ContentItemAccessGenerator\ContentItemAccessGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<!-- Update the property to include all EmbeddedResource files -->
+		<AdditionalFileItemNames>$(AdditionalFileItemNames);EmbeddedResource;Content;None</AdditionalFileItemNames>
+	</PropertyGroup>
+</Project>

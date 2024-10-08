@@ -1,0 +1,85 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+		<CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)\GeneratedFiles</CompilerGeneratedFilesOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="2InvalidChars-%3b.txt" />
+	  <None Remove="TestAssets\$$InvalidChars\Test.txt" />
+	  <None Remove="TestAssets\Subfolder With Spaces\Test With Spaces.txt" />
+	  <None Remove="TestAssets\Test With Spaces.txt" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+		<PackageReference Include="xunit" Version="2.9.2" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+
+  <ItemGroup>
+		<CompilerVisibleItemMetadata Include="None" MetadataName="GenerateNoneAccess" />
+		<CompilerVisibleItemMetadata Include="Content" MetadataName="GenerateContentAccess" />
+		<CompilerVisibleItemMetadata Include="EmbeddedResource" MetadataName="GenerateEmbeddedResourceAccess" />
+	</ItemGroup>
+
+	<Target Name="AddGenerateNoneAccessToNone" BeforeTargets="BeforeCompile">
+		<ItemGroup>
+			<None Update="@(None)" Condition="'%(None.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(None.CopyToOutputDirectory)' == 'Always'">
+				<GenerateNoneAccess>true</GenerateNoneAccess>
+			</None>
+			<None Update="@(None)" Condition="!('%(None.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(None.CopyToOutputDirectory)' == 'Always')">
+				<GenerateNoneAccess>false</GenerateNoneAccess>
+			</None>
+		</ItemGroup>
+	</Target>
+	<Target Name="AddGenerateContentAccessToContent" BeforeTargets="BeforeCompile">
+		<ItemGroup>
+			<Content Update="@(Content)" Condition="'%(Content.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(Content.CopyToOutputDirectory)' == 'Always'">
+				<GenerateContentAccess>true</GenerateContentAccess>
+			</Content>
+			<Content Update="@(Content)" Condition="!('%(Content.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(Content.CopyToOutputDirectory)' == 'Always')">
+				<GenerateContentAccess>false</GenerateContentAccess>
+			</Content>
+		</ItemGroup>
+	</Target>
+	<Target Name="AddGenerateEmbeddedResourceAccessToEmbeddedResources" BeforeTargets="BeforeCompile">
+		<ItemGroup>
+			<EmbeddedResource Update="@(EmbeddedResource)">
+				<GenerateEmbeddedResourceAccess>true</GenerateEmbeddedResourceAccess>
+			</EmbeddedResource>
+		</ItemGroup>
+	</Target>
+	
+	<ItemGroup>
+		<Content Include="TestContentAssets\**\*.*">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="TestAssets\**\*.*" />
+		<None Include="TestNoneAssets\NoneTest.txt">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<EmbeddedResource Include="2InvalidChars-%3b.txt" />
+		<EmbeddedResource Include="Test.txt" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<!-- Update the property to include all EmbeddedResource, Content and None files -->
+		<AdditionalFileItemNames>$(AdditionalFileItemNames);EmbeddedResource;Content;None</AdditionalFileItemNames>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\EmbeddedResourceAccessGenerator\EmbeddedResourceAccessGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\ContentItemAccessGenerator\ContentItemAccessGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\NoneItemAccessGenerator\NoneItemAccessGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+	</ItemGroup>
+</Project>

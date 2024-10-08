@@ -1,0 +1,18 @@
+﻿<Project>
+	<Target Name="AddGenerateContentAccessToContent" BeforeTargets="BeforeCompile">
+		<ItemGroup>
+			<Content Update="@(Content)" Condition="'%(Content.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(Content.CopyToOutputDirectory)' == 'Always'">
+				<GenerateContentAccess>true</GenerateContentAccess>
+			</Content>
+			<Content Update="@(Content)" Condition="!('%(Content.CopyToOutputDirectory)' == 'PreserveNewest' Or '%(Content.CopyToOutputDirectory)' == 'Always')">
+				<GenerateContentAccess>false</GenerateContentAccess>
+			</Content>
+		</ItemGroup>
+	</Target>
+	<ItemGroup>
+		<CompilerVisibleItemMetadata Include="Content" MetadataName="GenerateContentAccess" />
+	</ItemGroup>
+	<PropertyGroup>
+		<AdditionalFileItemNames>$(AdditionalFileItemNames);Content</AdditionalFileItemNames>
+	</PropertyGroup>
+</Project>

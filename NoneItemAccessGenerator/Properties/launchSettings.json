@@ -1,6 +1,6 @@
 {
 	"profiles": {
-		"EmbeddedResourceAccessGenerator": {
+		"NoneItemAccessGenerator": {
 			"commandName": "Project"
 		}
 	}
