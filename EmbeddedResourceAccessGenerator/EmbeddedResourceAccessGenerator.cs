@@ -12,7 +12,7 @@ using Microsoft.CodeAnalysis.Text;
 [Generator]
 public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 {
-	private static readonly DiagnosticDescriptor generationWarning = new DiagnosticDescriptor(
+	private static readonly DiagnosticDescriptor generationWarning = new(
 		id: "EMBRESGEN001",
 		title: "Exception on generation",
 		messageFormat: "Exception '{0}' {1}",
@@ -21,7 +21,7 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 		isEnabledByDefault: true);
 
 #if DEBUG
-	private static readonly DiagnosticDescriptor logInfo = new DiagnosticDescriptor(
+	private static readonly DiagnosticDescriptor logInfo = new(
 		id: "EMBRESGENLOG",
 		title: "Log",
 		messageFormat: "{0}",
@@ -101,7 +101,7 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 			return;
 		}
 
-		List<EmbeddedResourceItem> embeddedResources = new();
+		List<EmbeddedResourceItem> embeddedResources = [];
 		foreach (string path in paths)
 		{
 			string resourcePath =
@@ -145,9 +145,9 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 					}
 
 					/// <summary>
-					/// Gets the embedded resource '{{resourceName}}' as a stream-reader.
+					/// Gets the embedded resource '{{resourceName}}' as a StreamReader.
 					/// </summary>
-					/// <returns>The stream-reader to access the embedded resource.</returns>
+					/// <returns>The StreamReader to access the embedded resource.</returns>
 					public static StreamReader {{identifierName}}_Reader
 					{
 						get 
@@ -174,10 +174,10 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 					}
 				
 					/// <summary>
-					/// Gets the embedded resource's stream-reader.
+					/// Gets the embedded resource's StreamReader.
 					/// </summary>
-					/// <param name="resource">The embedded resource to retrieve the stream-reader for.</param>
-					/// <returns>The stream-reader to access the embedded resource.</returns>
+					/// <param name="resource">The embedded resource to retrieve the StreamReader for.</param>
+					/// <returns>The StreamReader to access the embedded resource.</returns>
 					public static StreamReader GetReader(this EmbeddedResource resource)
 					{
 						Assembly assembly = typeof(EmbeddedResources).Assembly;
@@ -231,10 +231,10 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 					}
 				
 					/// <summary>
-					/// Gets the embedded resource's stream-reader.
+					/// Gets the embedded resource's StreamReader.
 					/// </summary>
-					/// <param name="resource">The embedded resource to retrieve the stream-reader for.</param>
-					/// <returns>The stream-reader to access the embedded resource.</returns>
+					/// <param name="resource">The embedded resource to retrieve the StreamReader for.</param>
+					/// <returns>The StreamReader to access the embedded resource.</returns>
 					public static StreamReader GetReader(this EmbeddedResource{{pathAsClassName}} resource)
 					{
 						Assembly assembly = typeof(EmbeddedResources).Assembly;
@@ -431,7 +431,9 @@ public class EmbeddedResourceAccessGenerator : IIncrementalGenerator
 	private void Log(GeneratorExecutionContext context, string log)
 	{
 #if DEBUG
+#pragma warning disable RS1035
 		context.ReportDiagnostic(Diagnostic.Create(EmbeddedResourceAccessGenerator.logInfo, Location.None, log));
+#pragma warning restore RS1035
 #endif
 	}
 }
